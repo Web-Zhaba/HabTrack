@@ -4,6 +4,8 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import pluginImport from 'eslint-plugin-import'
+import prettier from 'eslint-config-prettier'
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -12,13 +14,23 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
+      pluginImport.flatConfigs.recommended,
+      pluginImport.flatConfigs.typescript,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
+    settings: {
+      'import/resolver': {
+        typescript: {
+          project: ['./tsconfig.json'],
+          alwaysTryTypes: true,
+        },
+      },
+    },
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
     },
   },
-  'prettier',
+  prettier,
 ])

@@ -1,73 +1,98 @@
-# React + TypeScript + Vite
+# Habit Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive web application to help you build and maintain good habits. Track your daily routines, visualize your progress, and stay motivated.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- ✅ **Create & Manage Habits** – Add habits with a name, category, color, and goal type (binary or quantitative).
+- 📅 **Daily Tracking** – Mark habits as done for any date; see your daily progress at a glance.
+- 🔥 **Streak Calculation** – Automatically tracks your current streak for each habit.
+- 📊 **Statistics & Calendar** – Visualize your performance with a heatmap calendar and charts (last 7/30 days).
+- 🌓 **Dark Mode** – Switch between light and dark themes.
+- 💾 **Local Storage** – All data is saved in your browser; no sign-up required.
+- 📤 **Export / Import** – Backup your data as JSON.
+- 📱 **Mobile Friendly** – Fully responsive design.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Frontend:** React (Vite), TypeScript, React Router, Redux Toolkit (or Zustand), React Hook Form
+- **Styling:** CSS Modules / Tailwind CSS (choose one)
+- **Date Handling:** date-fns
+- **Charts:** Recharts / Chart.js
+- **Icons:** React Icons & custom SVGs
+- **Storage:** localStorage (with persistence layer)
 
-## Expanding the ESLint configuration
+## Demo
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+[Live Demo](https://your-demo-link.vercel.app) – try it out!
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/habit-tracker.git
+   cd habit-tracker
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+4. Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+
+### Build for Production
+
+```bash
+npm run build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The project follows a feature-based architecture, which organizes code by business domains rather than by technical roles. This makes the codebase more scalable and maintainable as the application grows.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── app/               # App-wide setup: providers, router, global styles, store configuration
+├── assets/            # Static files (images, fonts, icons)
+├── features/          # Feature modules, each containing all code for a specific domain
+│   ├── habits/        # Everything related to habit management (CRUD, types, hooks)
+│   ├── settings/      # User preferences, theme toggles, data export/import
+│   └── statistics/    # Calendar, charts, progress visualization
+├── pages/             # Page components that compose features into full pages
+├── shared/            # Reusable UI components, helpers, hooks, and types used across features
+└── main.tsx           # Application entry point
+```
+
+## Contributing
+
+Contributions are welcome! If you have ideas for improvements, feel free to open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Built with [Vite](https://vitejs.dev/) and [React](https://reactjs.org/).
+
+---
+
+*Happy habit building!*
