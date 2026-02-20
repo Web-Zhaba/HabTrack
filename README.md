@@ -18,10 +18,10 @@ A modern, responsive web application to help you build and maintain good habits.
 ## Tech Stack
 
 - **Frontend:** React (Vite), TypeScript, React Router, Redux Toolkit (or Zustand), React Hook Form
-- **Styling:** CSS Modules / Tailwind CSS (choose one)
+- **Styling:** Tailwind CSS, shadcn/UI
 - **Date Handling:** date-fns
 - **Charts:** Recharts / Chart.js
-- **Icons:** React Icons & custom SVGs
+- **Icons:** React Icons, Lucide & custom SVGs
 - **Storage:** localStorage (with persistence layer)
 
 ## Demo
