@@ -37,7 +37,7 @@ A modern, responsive web application to help you build and maintain good habits.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/habit-tracker.git
+   git clone https://github.com/Web-Zhaba/HabTrack.git
    cd habit-tracker
    ```
 
