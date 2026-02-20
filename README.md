@@ -2,8 +2,6 @@
 
 A modern, responsive web application to help you build and maintain good habits. Track your daily routines, visualize your progress, and stay motivated.
 
-![App Screenshot](link-to-screenshot.png) *Add a screenshot of your app here*
-
 ## Features
 
 - ✅ **Create & Manage Habits** – Add habits with a name, category, color, and goal type (binary or quantitative).
@@ -82,16 +80,6 @@ src/
 ├── shared/            # Reusable UI components, helpers, hooks, and types used across features
 └── main.tsx           # Application entry point
 ```
-
-## Roadmap
-
-- [ ] Basic CRUD for habits
-- [ ] Daily tracking with localStorage
-- [ ] Calendar view with habit heatmap
-- [ ] Charts for habit statistics
-- [ ] Dark mode toggle
-- [ ] Data export/import
-- [ ] User accounts (backend + JWT) – *optional*
 
 ## Contributing
 
