@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react"
 
 type Theme = "dark" | "light" | "system"
+type Palette = "default" | "forest" | "sunset"
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -11,11 +12,15 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
   theme: Theme
   setTheme: (theme: Theme) => void
+  palette: Palette
+  setPalette: (palette: Palette) => void
 }
 
 const initialState: ThemeProviderState = {
   theme: "system",
   setTheme: () => null,
+  palette: "default",
+  setPalette: () => null,
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
@@ -30,10 +35,20 @@ export function ThemeProvider({
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   )
 
+  const [palette, setPalette] = useState<Palette>(() => {
+    const stored = localStorage.getItem("vite-ui-palette") as Palette | null
+    if (stored === "default" || stored === "forest" || stored === "sunset") {
+      return stored
+    }
+    return "default"
+  })
+
   useEffect(() => {
     const root = window.document.documentElement
 
     root.classList.remove("light", "dark")
+
+    let resolvedTheme: Theme = theme
 
     if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
@@ -41,18 +56,23 @@ export function ThemeProvider({
         ? "dark"
         : "light"
 
-      root.classList.add(systemTheme)
-      return
+      resolvedTheme = systemTheme
     }
 
-    root.classList.add(theme)
-  }, [theme])
+    root.classList.add(resolvedTheme)
+    root.dataset.theme = palette
+  }, [theme, palette])
 
-  const value = {
+  const value: ThemeProviderState = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
+    setTheme: (nextTheme: Theme) => {
+      localStorage.setItem(storageKey, nextTheme)
+      setTheme(nextTheme)
+    },
+    palette,
+    setPalette: (nextPalette: Palette) => {
+      localStorage.setItem("vite-ui-palette", nextPalette)
+      setPalette(nextPalette)
     },
   }
 

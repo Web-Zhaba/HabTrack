@@ -1,18 +1,23 @@
 import { FiGithub } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 
+const APP_VERSION = "v0.0.1 Settings page update!";
+
 export const Footer = () => {
   return (
-    <footer className="w-full h-16 border-t flex items-center justify-center fixed bottom-0 bg-background text-muted-foreground">
-      <div className="flex items-center justify-center w-full max-w-4xl px-4 gap-4">
-        <p>© {new Date().getFullYear()} Habit Tracker</p>
+    <footer className="w-full border-t bg-background/95 text-muted-foreground backdrop-blur-sm supports-backdrop-filter:bg-background/50">
+      <div className="mx-auto flex h-14 w-full max-w-5xl flex-col items-center justify-center gap-1 px-4 text-xs sm:h-16 sm:flex-row sm:justify-between sm:gap-4 sm:text-sm">
+        <p>
+          © {new Date().getFullYear()} Habit Tracker · {APP_VERSION}
+        </p>
         <nav>
           <Button
-          variant="link"
-          className="text-muted-foreground"
-          size="sm"
+            variant="link"
+            className="text-muted-foreground"
+            size="sm"
           >
-            <FiGithub size={20} /> <a href="https://github.com/Web-Zhaba/HabTrack#">GitHub</a>
+            <FiGithub size={20} />{" "}
+            <a href="https://github.com/Web-Zhaba/HabTrack#">GitHub</a>
           </Button>
         </nav>
       </div>
