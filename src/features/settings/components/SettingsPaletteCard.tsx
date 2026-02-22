@@ -3,7 +3,7 @@ import { useTheme } from '@/components/ThemeProvider';
 import { PaletteSwatchButton } from '@/components/ui/palette-swatch-button';
 
 const paletteOptions: {
-  id: 'default' | 'forest' | 'sunset' | 'ocean';
+  id: 'default' | 'forest' | 'sunset' | 'ocean' | 'astro';
   label: string;
   description: string;
 }[] = [
@@ -26,6 +26,11 @@ const paletteOptions: {
     id: 'ocean',
     label: 'Океан',
     description: 'Свежая морская палитра с более округлыми формами.',
+    },
+  {
+    id: 'astro',
+    label: 'Астро',
+    description: 'Красочная палитра с выраженными оранжевыми и синими тонами'
   },
 ];
 

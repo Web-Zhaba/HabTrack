@@ -31,7 +31,7 @@ function updateFaviconFromPrimary() {
 }
 
 type Theme = "dark" | "light" | "system"
-type Palette = "default" | "forest" | "sunset" | "ocean"
+type Palette = "default" | "forest" | "sunset" | "ocean" | "astro"
 
 type ThemeProviderProps = {
   children: React.ReactNode
