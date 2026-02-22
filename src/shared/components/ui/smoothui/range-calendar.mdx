@@ -1,0 +1,51 @@
+---
+title: "Range Calendar"
+description: Календарь диапазона дат для отслеживания прогресса привычек за период.
+order: 2
+published: true
+references: ["https://react-aria.adobe.com/RangeCalendar#api"]
+---
+
+## Прогресс за период
+
+Календарь диапазона позволяет выбрать начальную и конечную дату и посчитать прогресс привычек за весь период.
+
+Основная логика расчета вынесена в селекторы `calculateHabitRangeProgress` и `groupHabitsByDay` из `features/statistics/store/habitLogsSlice.ts`.
+
+```ts
+import {
+  calculateHabitRangeProgress,
+  groupHabitsByDay,
+  type DateRange,
+} from "@/features/statistics/store/habitLogsSlice"
+
+const range: DateRange = { start: "2026-02-01", end: "2026-02-07" }
+
+const periodProgress = calculateHabitRangeProgress(habits, habitLogs, range)
+const groupedByDay = groupHabitsByDay(habits, habitLogs, range)
+```
+
+`periodProgress` содержит суммарный прогресс за выбранный интервал, а `groupedByDay` — привычки, сгруппированные по датам и дням недели.
+
+## Поведение диапазона
+
+- Поддерживается выбор периода с проверкой, что дата окончания не раньше даты начала.
+- При неверном диапазоне функции возвращают пустой прогресс и группы.
+- При отсутствии привычек в периоде возвращается пустой список групп, что можно использовать для отображения пустого состояния.
+
+## Использование с Range Calendar
+
+При выборе диапазона в компоненте RangeCalendar вы можете передавать его в селекторы:
+
+```ts
+function onRangeChange(nextRange: DateRange | null) {
+  if (!nextRange) return
+
+  const progress = calculateHabitRangeProgress(habits, habitLogs, nextRange)
+  const groups = groupHabitsByDay(habits, habitLogs, nextRange)
+
+  // далее прогресс и группы можно отрисовать под календарем
+}
+```
+
+Такой подход сохраняет существующую навигацию по месяцам и отметку выполнения привычек, добавляя возможность анализа сразу за выбранный период.

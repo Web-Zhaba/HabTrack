@@ -15,7 +15,7 @@ export function AvatarDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-lg" className="rounded-full">
+        <Button intent="plain" size="icon-lg" className="rounded-full">
           <Avatar>
             <AvatarImage src="/avatar-placeholder.svg" alt="icon" />
             <AvatarFallback>CN</AvatarFallback>

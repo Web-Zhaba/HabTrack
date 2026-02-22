@@ -20,6 +20,10 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@efferd": "https://efferd.com/r/{style}/{name}.json"
+    "@acme": "https://acme.com/r/{name}.json",
+    "@efferd": "https://efferd.com/r/{style}/{name}.json",
+    "@smoothui": "https://smoothui.dev/r/{name}.json",
+    "@scrollxui": "https://www.scrollxui.dev/registry/{name}.json",
+    "@intentui": "https://intentui.com/r/{name}"
   }
 }

@@ -22,7 +22,7 @@ export const productLinks: LinkItemType[] = [
 	},
 	{
 		label: "Друзья",
-		href: "#",
+		href: "/friends",
 		description: "Добавить друга для совместного отслеживания привычек",
 		icon: (
 			<UserPlusIcon

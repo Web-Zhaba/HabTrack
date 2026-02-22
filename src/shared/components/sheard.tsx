@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import type React from "react";
+import { Link } from "react-router";
 
 export type LinkItemType = {
 	label: string;
@@ -8,6 +9,8 @@ export type LinkItemType = {
 	description?: string;
 };
 
+type LinkItemProps = Omit<React.ComponentProps<typeof Link>, "to"> & LinkItemType;
+
 export function LinkItem({
 	label,
 	description,
@@ -15,11 +18,11 @@ export function LinkItem({
 	className,
 	href,
 	...props
-}: React.ComponentProps<"a"> & LinkItemType) {
+}: LinkItemProps) {
 	return (
-		<a
+		<Link
 			className={cn("flex items-center gap-x-2", className)}
-			href={href}
+			to={href}
 			{...props}
 		>
 			<div
@@ -36,6 +39,6 @@ export function LinkItem({
 					{description}
 				</span>
 			</div>
-		</a>
+		</Link>
 	);
 }

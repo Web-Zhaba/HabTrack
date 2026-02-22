@@ -1,7 +1,7 @@
 import { FiGithub } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 
-const APP_VERSION = "v0.0.1 Settings page update!";
+const APP_VERSION = "v0.2.0 Первая бета версия!";
 
 export const Footer = () => {
   return (
@@ -12,7 +12,7 @@ export const Footer = () => {
         </p>
         <nav>
           <Button
-            variant="link"
+            intent="plain"
             className="text-muted-foreground"
             size="sm"
           >

@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Empty,
@@ -10,33 +11,60 @@ import {
 import { Link } from "react-router";
 import { PiMaskSad } from "react-icons/pi";
 import { ArrowUpRightIcon } from "lucide-react"
+import { useDispatch } from "react-redux"
+import { addHabit } from "../store/habitsSlice"
+import type { Habit } from "../types/habit.types"
+import { HabitCreateModal } from "./HabitCreateModal"
 
 export function EmptyHabits() {
+  const dispatch = useDispatch()
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+
+  const handleOpenCreate = () => {
+    setIsCreateModalOpen(true)
+  }
+
+  const handleCloseCreate = () => {
+    setIsCreateModalOpen(false)
+  }
+
+  const handleSubmit = (habit: Habit) => {
+    dispatch(addHabit(habit))
+    handleCloseCreate()
+  }
+
   return (
-    <Empty>
-      <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <PiMaskSad />
-        </EmptyMedia>
-        <EmptyTitle>Ещё нет привычек</EmptyTitle>
-        <EmptyDescription>
-          Вы еще не завели ни одной привычки, давайте сделаем это! 
-        </EmptyDescription>
-      </EmptyHeader>
-      <EmptyContent className="flex-row justify-center gap-2">
-        <Button>Добавить привычку</Button>
-        <Button variant="outline">Импортировать данные</Button>
-      </EmptyContent>
-      <Button
-        variant="link"
-        asChild
-        className="text-muted-foreground"
-        size="sm"
-      >
-        <Link to='/login'>
-          Войти в аккаунт <ArrowUpRightIcon />
+    <>
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <PiMaskSad />
+          </EmptyMedia>
+          <EmptyTitle>Ещё нет привычек</EmptyTitle>
+          <EmptyDescription>
+            Вы еще не завели ни одной привычки, давайте сделаем это!
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent className="flex-row justify-center gap-2">
+          <Button type="button" onClick={handleOpenCreate}>
+            Добавить привычку
+          </Button>
+          <Button type="button" intent="outline">
+            Импортировать данные
+          </Button>
+        </EmptyContent>
+        <Link to="/login">
+          <Button
+            intent="plain"
+            className="text-muted-foreground"
+            size="sm"
+          >
+              Войти в аккаунт <ArrowUpRightIcon />
+          </Button>
         </Link>
-      </Button>
-    </Empty>
+      </Empty>
+
+      <HabitCreateModal isOpen={isCreateModalOpen} onClose={handleCloseCreate} onSubmit={handleSubmit} />
+    </>
   )
 }

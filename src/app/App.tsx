@@ -5,7 +5,6 @@ import { TooltipProvider } from "@/components/ui/tooltip"
   
 export default function App() {
   return (
-
     <ThemeProvider>
       <TooltipProvider delayDuration={1000} skipDelayDuration={500}>
         <RouterProvider router={router} />

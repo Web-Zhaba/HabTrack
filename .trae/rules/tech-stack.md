@@ -1,0 +1,1 @@
+1. React, TypeScript, Tailwind CSS, shadcn/ui, Redux, React Router

@@ -1,10 +1,11 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 import { Portal, PortalBackdrop } from "@/components/ui/portal";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { productLinks } from "@/components/nav-links";
 import { LinkItem } from "@/components/sheard";
 import { XIcon, MenuIcon } from "lucide-react";
+import { Link } from "react-router";
 
 export function MobileNav() {
 	const [open, setOpen] = React.useState(false);
@@ -18,7 +19,7 @@ export function MobileNav() {
 				className="md:hidden"
 				onClick={() => setOpen(!open)}
 				size="icon"
-				variant="outline"
+				intent="outline"
 			>
 				<div
 					className={cn(
@@ -50,7 +51,7 @@ export function MobileNav() {
 						data-slot={open ? "open" : "closed"}
 					>
 						<div className="flex w-full flex-col gap-y-2">
-							<span className="text-sm">Product</span>
+							<span className="text-sm text-muted-foreground">Навигация</span>
 							{productLinks.map((link) => (
 								<LinkItem
 									className="rounded-lg p-2 active:bg-muted dark:active:bg-muted/50"
@@ -60,7 +61,9 @@ export function MobileNav() {
 							))}
 						</div>
 						<div className="mt-5 flex flex-col gap-2">
-							<Button className="w-full"><a href="/login">Войти</a></Button>
+							<Link to="/login" className={buttonVariants({ className: "w-full" })}>
+								Войти
+							</Link>
 						</div>
 					</div>
 				</Portal>
