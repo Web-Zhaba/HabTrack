@@ -316,12 +316,12 @@ export const {
 // Базовые селекторы
 export const selectHabitLogs = createSelector(
   [(state: { habitLogs: HabitLogsState }) => state.habitLogs.items],
-  (items) => items,
+  (items) => [...items],
 );
 
 export const selectSelectedRange = createSelector(
   [(state: { habitLogs: HabitLogsState }) => state.habitLogs.selectedRange],
-  (selectedRange) => selectedRange,
+  (selectedRange) => (selectedRange ? { ...selectedRange } : null),
 );
 
 // Вспомогательные функции для расчёта статистики

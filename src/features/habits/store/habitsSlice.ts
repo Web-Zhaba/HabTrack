@@ -38,7 +38,7 @@ export const { setHabits, addHabit, removeHabit, updateHabit } = habitsSlice.act
 // Селекторы
 export const selectHabits = createSelector(
   [(state: { habits: HabitsState }) => state.habits.items],
-  (items) => items,
+  (items) => [...items],
 );
 
 export const selectActiveHabits = createSelector(
