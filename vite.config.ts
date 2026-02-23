@@ -56,16 +56,8 @@ export default defineConfig(({ mode }) => {
               return 'vendor-redux';
             }
 
-            // Recharts и его зависимости (d3, lodash) — отдельный большой чанк
-            if (
-              id.includes('/node_modules/recharts/') ||
-              id.includes('/node_modules/d3-') ||
-              id.includes('/node_modules/lodash/') ||
-              id.includes('/node_modules/delaunator/') ||
-              id.includes('/node_modules/robust-predicates/')
-            ) {
-              return 'vendor-recharts';
-            }
+            // Recharts и его зависимости — не выносим в отдельный чанк из-за проблем с инициализацией
+            // Recharts будет включён в основной vendor чанк
 
             // React Aria Components
             if (
