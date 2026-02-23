@@ -6,6 +6,7 @@ import BasicModal from '@/components/ui/smoothui/basic-modal';
 import { useAppDispatch } from '@app/store/hooks';
 import { setHabits } from '@features/habits/store/habitsSlice';
 import { clearHabitLogs } from '@features/statistics/store/habitLogsSlice';
+import { ImportDataButton } from '@/components/ImportDataButton';
 
 export default function SettingsDataCard() {
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
@@ -36,13 +37,18 @@ export default function SettingsDataCard() {
     setIsResetModalOpen(false);
   };
 
+  const handleImportComplete = () => {
+    window.location.reload();
+  };
+
   return (
     <>
       <Card>
         <CardHeader className="border-b">
           <CardTitle>Данные</CardTitle>
           <CardDescription>
-            Экспортируйте свои данные или полностью очистите локальное хранилище.
+            Экспортируйте свои данные, импортируйте из резервной копии или полностью очистите
+            локальное хранилище.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 py-4">
@@ -63,6 +69,19 @@ export default function SettingsDataCard() {
               <Download />
               Экспортировать
             </Button>
+          </div>
+
+          <div className="flex flex-col items-start justify-between gap-2 rounded-lg border bg-muted/40 p-4 sm:flex-row sm:items-center">
+            <div>
+              <p className="text-sm font-medium">Импорт данных</p>
+              <p className="text-muted-foreground text-xs">
+                Восстановите данные из ранее экспортированного JSON-файла.
+              </p>
+            </div>
+            <ImportDataButton
+              onImportComplete={handleImportComplete}
+              buttonProps={{ size: 'sm', className: 'w-full sm:w-auto' }}
+            />
           </div>
 
           <div className="flex flex-col items-start justify-between gap-2 rounded-lg border bg-destructive/5 p-4 sm:flex-row sm:items-center">

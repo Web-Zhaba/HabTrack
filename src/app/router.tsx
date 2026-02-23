@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router';
+import { useEffect } from 'react';
 import { MainLayout } from './layouts/MainLayout';
 import HomePage from '@pages/Home.tsx';
 import { lazy, Suspense } from 'react';
@@ -31,13 +32,29 @@ const withSuspense = (Component: React.ComponentType) => (
   </Suspense>
 );
 
+// Компонент для установки title страницы
+function PageWithTitle({ title, children }: { title: string; children: React.ReactNode }) {
+  useEffect(() => {
+    document.title = `${title} — HabTrack`;
+    return () => {
+      document.title = 'HabTrack — Трекер привычек для формирования полезных рутины';
+    };
+  }, [title]);
+
+  return <>{children}</>;
+}
+
+const withTitle = (Component: React.ComponentType, title: string) => (
+  <PageWithTitle title={title}>{withSuspense(Component)}</PageWithTitle>
+);
+
 export const router = createBrowserRouter([
   {
     element: <AuthLayout />,
     children: [
-      { path: '/login', element: withSuspense(LogInPage) },
-      { path: '/register', element: withSuspense(RegisterPage) },
-      { path: '/reset-password', element: withSuspense(ResetPasswordPage) },
+      { path: '/login', element: withTitle(LogInPage, 'Вход') },
+      { path: '/register', element: withTitle(RegisterPage, 'Регистрация') },
+      { path: '/reset-password', element: withTitle(ResetPasswordPage, 'Сброс пароля') },
     ],
   },
   {
@@ -46,13 +63,20 @@ export const router = createBrowserRouter([
       {
         element: <MainLayout />,
         children: [
-          { path: '/', element: <HomePage /> },
-          { path: '/habits', element: withSuspense(HabitsPage) },
-          { path: '/stats', element: withSuspense(StatsPage) },
-          { path: '/settings', element: withSuspense(SettingsPage) },
-          { path: '/habit/:id', element: withSuspense(HabitDetailPage) },
-          { path: '/friends', element: withSuspense(FriendsPage) },
-          { path: '/*', element: withSuspense(NotFoundPage) },
+          {
+            path: '/',
+            element: (
+              <PageWithTitle title="Главная">
+                <HomePage />
+              </PageWithTitle>
+            ),
+          },
+          { path: '/habits', element: withTitle(HabitsPage, 'Привычки') },
+          { path: '/stats', element: withTitle(StatsPage, 'Статистика') },
+          { path: '/settings', element: withTitle(SettingsPage, 'Настройки') },
+          { path: '/habit/:id', element: withTitle(HabitDetailPage, 'Детали привычки') },
+          { path: '/friends', element: withTitle(FriendsPage, 'Друзья') },
+          { path: '/*', element: withTitle(NotFoundPage, 'Страница не найдена') },
         ],
       },
     ],

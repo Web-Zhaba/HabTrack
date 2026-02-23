@@ -26,11 +26,8 @@ const NAV_ITEMS: NavItem[] = [
 export function NavbarFlow() {
   const { theme, setTheme } = useTheme();
   const location = useLocation();
-  // const navigate = useNavigate();
-  // const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [isDark, setIsDark] = React.useState(false);
 
-  // Sync toggle state with current theme
   React.useEffect(() => {
     if (theme === 'system') {
       const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -46,29 +43,19 @@ export function NavbarFlow() {
     setIsDark(checked);
   };
 
-  const handleNavigation = (href: string, _label: string, e: React.MouseEvent) => {
-    if (!href.startsWith('/')) {
-      e.preventDefault();
-      return;
-    }
-
-    // You could add more complex validation here if needed
-  };
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-5xl px-4 flex items-center justify-between">
-        {/* Left: Logo (Home Link) */}
+      <div className="pointer-events-auto w-full max-w-5xl px-4 flex items-center justify-between gap-2">
+        {/* Logo */}
         <Link
           to="/"
           className="flex items-center justify-center w-12 h-12 bg-background/40 backdrop-blur-xl border border-border/40 rounded-2xl text-foreground hover:scale-105 transition-transform shadow-sm shrink-0"
           aria-label="На главную"
-          onClick={(e) => handleNavigation('/', 'Logo', e)}
         >
           <LogoIcon className="w-6 h-6" />
         </Link>
 
-        {/* Center: Navigation Pill Strip */}
+        {/* Navigation */}
         <nav className="flex items-center p-1 bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-sm text-foreground gap-1 md:gap-2 justify-between overflow-x-auto no-scrollbar max-w-[calc(100vw-7rem)] md:max-w-none">
           {NAV_ITEMS.map((item) => {
             const isActive =
@@ -78,7 +65,6 @@ export function NavbarFlow() {
               <Link
                 key={item.href}
                 to={item.href}
-                onClick={(e) => handleNavigation(item.href, item.label, e)}
                 className={cn(
                   'relative group flex items-center justify-center gap-2 px-2 md:px-4 h-10 rounded-full transition-colors duration-300 min-w-[40px] md:min-w-0',
                   isActive
@@ -100,16 +86,14 @@ export function NavbarFlow() {
                     style={{ zIndex: 0 }}
                   />
                 )}
-                <span className="relative z-10 flex items-center gap-2">
-                  <item.icon className="w-5 h-5 md:w-4 md:h-4" />
-                  <span className="hidden md:inline text-sm pb-0.5">{item.label}</span>
-                </span>
+                <item.icon className="relative z-10 w-5 h-5 md:w-4 md:h-4" />
+                <span className="relative z-10 hidden md:inline text-sm pb-0.5">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Right: Theme Toggle */}
+        {/* Theme Toggle */}
         <div className="flex items-center justify-center bg-background/40 backdrop-blur-xl border border-border/40 rounded-full p-1 shadow-sm h-12 px-2 shrink-0">
           <AnimatedToggle
             checked={isDark}
@@ -117,7 +101,7 @@ export function NavbarFlow() {
             variant="icon"
             size="lg"
             icons={{
-              on: <Moon className="w-4 h-4 text-black dark:text-white fill-black" />, // Moon for Dark mode (as per image)
+              on: <Moon className="w-4 h-4 text-black dark:text-white fill-black" />,
               off: <Sun className="w-4 h-4 text-yellow-500 fill-yellow-500" />,
             }}
             className="shadow-sm"

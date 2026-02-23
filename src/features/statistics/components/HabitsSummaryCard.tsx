@@ -5,77 +5,21 @@ import { useAppSelector } from '@app/store/hooks';
 import {
   calculateHabitRangeProgress,
   type HabitSummary,
+  selectCurrentStreak,
+  selectMaxStreak,
+  selectPerfectDaysCount,
 } from '@features/statistics/store/habitLogsSlice';
-import type { Habit } from '@features/habits/types/habit.types';
-import type { HabitLog } from '@/types/HabitLog.types';
-import { Trophy, TrendingDown, CheckCircle2, Flame } from 'lucide-react';
-
-function calculateCurrentStreak(habits: Habit[], logs: HabitLog[]): number {
-  if (!habits.length || !logs.length) return 0;
-
-  const today = new Date();
-  const completedDates = new Set<string>();
-
-  const isCompleted = (log: HabitLog, habit: Habit) => {
-    if (habit.type === 'quantitative') {
-      return (log.value ?? 0) >= (habit.target ?? 1);
-    }
-    return log.completed === true;
-  };
-
-  const habitsMap = new Map(habits.map((h) => [h.id, h]));
-
-  logs.forEach((log) => {
-    const habit = habitsMap.get(log.habitId);
-    if (habit && isCompleted(log, habit)) {
-      completedDates.add(log.date);
-    }
-  });
-
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  let checkDate = new Date(today);
-  let currentStreak = 0;
-
-  // Check today
-  if (completedDates.has(formatDate(checkDate))) {
-    currentStreak++;
-    checkDate.setDate(checkDate.getDate() - 1);
-  } else {
-    // If today is not done, check yesterday
-    checkDate.setDate(checkDate.getDate() - 1);
-    if (!completedDates.has(formatDate(checkDate))) {
-      return 0;
-    }
-    // If yesterday is done, we start counting from yesterday
-  }
-
-  // Check previous days
-  while (true) {
-    if (completedDates.has(formatDate(checkDate))) {
-      currentStreak++;
-      checkDate.setDate(checkDate.getDate() - 1);
-    } else {
-      break;
-    }
-  }
-
-  return currentStreak;
-}
+import { Trophy, TrendingDown, CheckCircle2, Flame, Award } from 'lucide-react';
 
 export function HabitsSummaryCard() {
-  const habits = useAppSelector((state) => state.habits.items) as Habit[];
-  const habitLogs = useAppSelector((state) => state.habitLogs.items) as HabitLog[];
+  const habits = useAppSelector((state) => state.habits.items);
+  const habitLogs = useAppSelector((state) => state.habitLogs.items);
   const selectedRange = useAppSelector((state) => state.habitLogs.selectedRange);
 
-  const currentStreak = React.useMemo(() => {
-    return calculateCurrentStreak(habits, habitLogs);
-  }, [habits, habitLogs]);
+  // Используем централизованные селекторы для расчёта статистики
+  const currentStreak = useAppSelector(selectCurrentStreak);
+  const maxStreak = useAppSelector(selectMaxStreak);
+  const perfectDaysCount = useAppSelector(selectPerfectDaysCount);
 
   const summary: HabitSummary = React.useMemo(() => {
     if (!selectedRange) {
@@ -126,6 +70,30 @@ export function HabitsSummaryCard() {
             </div>
             <span className="text-2xl font-bold">
               {currentStreak} <span className="text-sm font-normal text-muted-foreground">дн.</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Дополнительная статистика */}
+        <div className="grid grid-cols-2 gap-3 pt-2 border-t">
+          <div className="flex flex-col gap-1 p-3 rounded-lg bg-muted/50">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Award className="w-4 h-4 text-yellow-500" />
+              Лучший стрик
+            </div>
+            <span className="text-2xl font-bold">
+              {maxStreak} <span className="text-sm font-normal text-muted-foreground">дн.</span>
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-1 p-3 rounded-lg bg-muted/50">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Trophy className="w-4 h-4 text-blue-500" />
+              100% дни
+            </div>
+            <span className="text-2xl font-bold">
+              {perfectDaysCount}{' '}
+              <span className="text-sm font-normal text-muted-foreground">дн.</span>
             </span>
           </div>
         </div>

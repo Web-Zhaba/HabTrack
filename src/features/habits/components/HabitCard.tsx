@@ -112,7 +112,7 @@ export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: Ha
                 {habit.icon && (
                   <div className="flex h-10 w-10 flex-none items-center justify-center rounded-lg bg-primary text-2xl">
                     {IconComponent ? (
-                      <IconComponent className="h-6 w-6" />
+                      <IconComponent className="h-6 w-6 text-accent-foreground" />
                     ) : (
                       <span>{habit.icon}</span>
                     )}

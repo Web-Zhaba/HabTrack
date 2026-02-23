@@ -15,6 +15,7 @@ import { useAppDispatch } from '@app/store/hooks';
 import { addHabit } from '../store/habitsSlice';
 import type { Habit } from '../types/habit.types';
 import { HabitCreateModal } from './HabitCreateModal';
+import { ImportDataButton } from '@/components/ImportDataButton';
 
 export function EmptyHabits() {
   const dispatch = useAppDispatch();
@@ -49,9 +50,7 @@ export function EmptyHabits() {
           <Button type="button" onClick={handleOpenCreate}>
             Добавить привычку
           </Button>
-          <Button type="button" intent="outline">
-            Импортировать данные
-          </Button>
+          <ImportDataButton onImportComplete={() => window.location.reload()} />
         </EmptyContent>
         <Link to="/login">
           <Button intent="plain" className="text-muted-foreground" size="sm">

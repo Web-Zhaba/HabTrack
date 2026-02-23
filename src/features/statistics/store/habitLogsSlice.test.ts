@@ -1,173 +1,410 @@
-import type { Habit } from "../../habits/types/habit.types"
-import type { HabitLog } from "@/types/HabitLog.types"
-import reducer, {
+import { describe, it, expect } from 'vitest';
+import type { Habit } from '../../habits/types/habit.types';
+import type { HabitLog } from '@/types/HabitLog.types';
+import {
   calculateHabitRangeProgress,
   groupHabitsByDay,
   type DateRange,
   setSelectedRange,
   selectSelectedRange,
+  selectHabitLogs,
+  selectCompletedDays,
+  selectPerfectDays,
+  selectCurrentStreak,
+  selectMaxStreak,
+  selectPerfectDaysCount,
   type HabitLogsState,
-} from "./habitLogsSlice"
+} from './habitLogsSlice';
+import habitLogsReducer from './habitLogsSlice';
 
 const habitsFixture: Habit[] = [
   {
-    id: "habit-binary",
-    name: "Утренняя зарядка",
-    description: "Короткая зарядка утром",
-    categoryId: "health",
-    color: "--primary",
-    icon: "🏃",
-    type: "binary",
-    createdAt: "2026-02-01",
+    id: 'habit-binary',
+    name: 'Утренняя зарядка',
+    description: 'Короткая зарядка утром',
+    categoryId: 'health',
+    color: '--primary',
+    icon: '🏃',
+    type: 'binary',
+    createdAt: '2026-02-01',
   },
   {
-    id: "habit-quant",
-    name: "Чтение",
-    description: "Чтение книг",
-    categoryId: "learning",
-    color: "--chart-1",
-    icon: "📚",
-    type: "quantitative",
+    id: 'habit-quant',
+    name: 'Чтение',
+    description: 'Чтение книг',
+    categoryId: 'learning',
+    color: '--chart-1',
+    icon: '📚',
+    type: 'quantitative',
     target: 10,
-    unit: "страниц",
-    createdAt: "2026-02-01",
+    unit: 'страниц',
+    createdAt: '2026-02-01',
   },
-]
+];
 
 const logsFixture: HabitLog[] = [
   {
-    id: "log-1",
-    habitId: "habit-binary",
-    date: "2026-02-20",
+    id: 'log-1',
+    habitId: 'habit-binary',
+    date: '2026-02-20',
     completed: true,
   },
   {
-    id: "log-2",
-    habitId: "habit-quant",
-    date: "2026-02-20",
+    id: 'log-2',
+    habitId: 'habit-quant',
+    date: '2026-02-20',
     value: 5,
   },
   {
-    id: "log-3",
-    habitId: "habit-quant",
-    date: "2026-02-21",
+    id: 'log-3',
+    habitId: 'habit-quant',
+    date: '2026-02-21',
     value: 10,
   },
-]
+];
 
-export function testCalculateHabitRangeProgress_basic() {
-  const range: DateRange = {
-    start: "2026-02-20",
-    end: "2026-02-21",
-  }
+describe('calculateHabitRangeProgress', () => {
+  it('должен корректно рассчитывать прогресс для валидного диапазона', () => {
+    const range: DateRange = {
+      start: '2026-02-20',
+      end: '2026-02-21',
+    };
 
-  const result = calculateHabitRangeProgress(habitsFixture, logsFixture, range)
+    const result = calculateHabitRangeProgress(habitsFixture, logsFixture, range);
 
-  const expectedPlanned = 2 + 10 * 2
-  const expectedCompleted = 1 + 5 + 10
-  const expectedPercent =
-    expectedPlanned > 0
-      ? Math.round((expectedCompleted / expectedPlanned) * 100)
-      : 0
+    const expectedPlanned = 2 + 10 * 2;
+    const expectedCompleted = 1 + 5 + 10;
+    const expectedPercent =
+      expectedPlanned > 0 ? Math.round((expectedCompleted / expectedPlanned) * 100) : 0;
 
-  if (result.totalPlanned !== expectedPlanned) {
-    throw new Error(`Expected planned ${expectedPlanned}, got ${result.totalPlanned}`)
-  }
+    expect(result.totalPlanned).toBe(expectedPlanned);
+    expect(result.totalCompleted).toBe(expectedCompleted);
+    expect(result.percent).toBe(expectedPercent);
+  });
 
-  if (result.totalCompleted !== expectedCompleted) {
-    throw new Error(
-      `Expected completed ${expectedCompleted}, got ${result.totalCompleted}`,
-    )
-  }
+  it('должен возвращать ноль для невалидного диапазона', () => {
+    const range: DateRange = {
+      start: '2026-02-21',
+      end: '2026-02-20',
+    };
 
-  if (result.percent !== expectedPercent) {
-    throw new Error(`Expected percent ${expectedPercent}, got ${result.percent}`)
-  }
-}
+    const result = calculateHabitRangeProgress(habitsFixture, logsFixture, range);
 
-export function testCalculateHabitRangeProgress_invalidRange() {
-  const range: DateRange = {
-    start: "2026-02-21",
-    end: "2026-02-20",
-  }
+    expect(result.totalPlanned).toBe(0);
+    expect(result.totalCompleted).toBe(0);
+    expect(result.percent).toBe(0);
+  });
+});
 
-  const result = calculateHabitRangeProgress(habitsFixture, logsFixture, range)
+describe('groupHabitsByDay', () => {
+  it('должен группировать привычки по дням для валидного диапазона', () => {
+    const range: DateRange = {
+      start: '2026-02-20',
+      end: '2026-02-21',
+    };
 
-  if (
-    result.totalPlanned !== 0 ||
-    result.totalCompleted !== 0 ||
-    result.percent !== 0
-  ) {
-    throw new Error("Expected zero progress for invalid range")
-  }
-}
+    const groups = groupHabitsByDay(habitsFixture, logsFixture, range);
 
-export function testGroupHabitsByDay_basic() {
-  const range: DateRange = {
-    start: "2026-02-20",
-    end: "2026-02-21",
-  }
+    expect(groups).toHaveLength(2);
 
-  const groups = groupHabitsByDay(habitsFixture, logsFixture, range)
+    groups.forEach((group) => {
+      expect(group.weekdayLabel).toBeDefined();
+      expect(group.items).toHaveLength(habitsFixture.length);
+    });
+  });
+});
 
-  if (groups.length !== 2) {
-    throw new Error(`Expected 2 groups, got ${groups.length}`)
-  }
+describe('selectedRange reducer and selector', () => {
+  it('должен устанавливать выбранный диапазон через reducer', () => {
+    const initialState: HabitLogsState = {
+      items: [],
+      selectedRange: null,
+    };
 
-  for (const group of groups) {
-    if (!group.weekdayLabel || group.items.length !== habitsFixture.length) {
-      throw new Error("Each group must have label and all habits")
-    }
-  }
-}
+    const range: DateRange = {
+      start: '2026-02-20',
+      end: '2026-02-21',
+    };
 
-export function testSelectedRangeReducer_andSelector() {
-  const initialState: HabitLogsState = {
-    items: [],
-    selectedRange: null,
-  }
+    const nextState = habitLogsReducer(initialState, setSelectedRange(range));
 
-  const range: DateRange = {
-    start: "2026-02-20",
-    end: "2026-02-21",
-  }
+    expect(nextState.selectedRange).toBeDefined();
+    expect(nextState.selectedRange?.start).toBe(range.start);
+    expect(nextState.selectedRange?.end).toBe(range.end);
+  });
 
-  const nextState = reducer(initialState, setSelectedRange(range))
+  it('должен возвращать selectedRange через селектор', () => {
+    const range: DateRange = {
+      start: '2026-02-20',
+      end: '2026-02-21',
+    };
 
-  if (!nextState.selectedRange) {
-    throw new Error("Expected selectedRange to be set")
-  }
+    const state: HabitLogsState = {
+      items: [],
+      selectedRange: range,
+    };
 
-  if (nextState.selectedRange.start !== range.start || nextState.selectedRange.end !== range.end) {
-    throw new Error("Selected range in state does not match payload")
-  }
+    const rootState = { habitLogs: state };
+    const selected = selectSelectedRange(rootState);
 
-  const rootState = { habitLogs: nextState }
-  const selected = selectSelectedRange(rootState)
+    expect(selected).toBeDefined();
+    expect(selected?.start).toBe(range.start);
+    expect(selected?.end).toBe(range.end);
+  });
+});
 
-  if (!selected || selected.start !== range.start || selected.end !== range.end) {
-    throw new Error("Selector did not return the expected selectedRange")
-  }
-}
+describe('интеграционный тест DateRange', () => {
+  it('должен корректно работать в связке reducer + утилиты', () => {
+    let state = habitLogsReducer(undefined, { type: '@@INIT' });
 
-export function testDateRangeIntegrationFlow() {
-  let state = reducer(undefined, { type: "@@INIT" })
+    const range: DateRange = {
+      start: '2026-02-20',
+      end: '2026-02-21',
+    };
 
-  const range: DateRange = {
-    start: "2026-02-20",
-    end: "2026-02-21",
-  }
+    state = habitLogsReducer(state, setSelectedRange(range));
 
-  state = reducer(state, setSelectedRange(range))
+    expect(state.selectedRange).toBeDefined();
 
-  if (!state.selectedRange) {
-    throw new Error("Expected selectedRange to be set after dispatch")
-  }
+    const progress = calculateHabitRangeProgress(habitsFixture, logsFixture, state.selectedRange!);
+    const groups = groupHabitsByDay(habitsFixture, logsFixture, state.selectedRange!);
 
-  const progress = calculateHabitRangeProgress(habitsFixture, logsFixture, state.selectedRange)
-  const groups = groupHabitsByDay(habitsFixture, logsFixture, state.selectedRange)
+    expect(progress.totalPlanned).toBeGreaterThan(0);
+    expect(groups).toHaveLength(2);
+  });
+});
 
-  if (progress.totalPlanned === 0 || groups.length === 0) {
-    throw new Error("Expected non-empty progress and groups for valid integration flow")
-  }
-}
+describe('habitLogsSlice selectors', () => {
+  describe('selectHabitLogs', () => {
+    it('должен возвращать все логи', () => {
+      const state: HabitLogsState = {
+        items: logsFixture,
+        selectedRange: null,
+      };
+
+      const rootState = { habitLogs: state };
+      const result = selectHabitLogs(rootState);
+
+      expect(result).toEqual(logsFixture);
+      expect(result).toHaveLength(3);
+    });
+
+    it('должен быть мемоизирован и возвращать ту же ссылку при неизменных данных', () => {
+      const state: HabitLogsState = {
+        items: logsFixture,
+        selectedRange: null,
+      };
+
+      const rootState = { habitLogs: state };
+      const result1 = selectHabitLogs(rootState);
+      const result2 = selectHabitLogs(rootState);
+
+      expect(result1).toBe(result2);
+    });
+  });
+
+  describe('selectCompletedDays', () => {
+    it('должен возвращать Set с датами, где выполнена хотя бы одна привычка', () => {
+      const state = {
+        habitLogs: {
+          items: logsFixture,
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result = selectCompletedDays(state);
+
+      expect(result).toBeInstanceOf(Set);
+      expect(result.has('2026-02-20')).toBe(true);
+      expect(result.has('2026-02-21')).toBe(true);
+    });
+
+    it('должен быть мемоизирован', () => {
+      const state = {
+        habitLogs: {
+          items: logsFixture,
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result1 = selectCompletedDays(state);
+      const result2 = selectCompletedDays(state);
+
+      expect(result1).toBe(result2);
+    });
+  });
+
+  describe('selectPerfectDays', () => {
+    it('должен возвращать Set с датами, где выполнены все привычки', () => {
+      const perfectLogs: HabitLog[] = [
+        {
+          id: 'log-1',
+          habitId: 'habit-binary',
+          date: '2026-02-20',
+          completed: true,
+        },
+        {
+          id: 'log-2',
+          habitId: 'habit-quant',
+          date: '2026-02-20',
+          value: 10,
+        },
+      ];
+
+      const state = {
+        habitLogs: {
+          items: perfectLogs,
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result = selectPerfectDays(state);
+
+      expect(result).toBeInstanceOf(Set);
+      expect(result.has('2026-02-20')).toBe(true);
+    });
+
+    it('должен быть мемоизирован', () => {
+      const state = {
+        habitLogs: {
+          items: logsFixture,
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result1 = selectPerfectDays(state);
+      const result2 = selectPerfectDays(state);
+
+      expect(result1).toBe(result2);
+    });
+  });
+
+  describe('selectCurrentStreak', () => {
+    it('должен возвращать 0, если нет логов', () => {
+      const state = {
+        habitLogs: {
+          items: [],
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result = selectCurrentStreak(state);
+      expect(result).toBe(0);
+    });
+
+    it('должен быть мемоизирован', () => {
+      const state = {
+        habitLogs: {
+          items: logsFixture,
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result1 = selectCurrentStreak(state);
+      const result2 = selectCurrentStreak(state);
+
+      expect(result1).toBe(result2);
+    });
+  });
+
+  describe('selectMaxStreak', () => {
+    it('должен возвращать 0, если нет логов', () => {
+      const state = {
+        habitLogs: {
+          items: [],
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result = selectMaxStreak(state);
+      expect(result).toBe(0);
+    });
+
+    it('должен быть мемоизирован', () => {
+      const state = {
+        habitLogs: {
+          items: logsFixture,
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result1 = selectMaxStreak(state);
+      const result2 = selectMaxStreak(state);
+
+      expect(result1).toBe(result2);
+    });
+  });
+
+  describe('selectPerfectDaysCount', () => {
+    it('должен возвращать количество дней со 100% выполнением', () => {
+      const perfectLogs: HabitLog[] = [
+        {
+          id: 'log-1',
+          habitId: 'habit-binary',
+          date: '2026-02-20',
+          completed: true,
+        },
+        {
+          id: 'log-2',
+          habitId: 'habit-quant',
+          date: '2026-02-20',
+          value: 10,
+        },
+      ];
+
+      const state = {
+        habitLogs: {
+          items: perfectLogs,
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result = selectPerfectDaysCount(state);
+      expect(result).toBe(1);
+    });
+
+    it('должен быть мемоизирован', () => {
+      const state = {
+        habitLogs: {
+          items: logsFixture,
+          selectedRange: null,
+        },
+        habits: {
+          items: habitsFixture,
+        },
+      };
+
+      const result1 = selectPerfectDaysCount(state);
+      const result2 = selectPerfectDaysCount(state);
+
+      expect(result1).toBe(result2);
+    });
+  });
+});

@@ -1,15 +1,5 @@
 import * as React from 'react';
 import { useAppSelector } from '@app/store/hooks';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { selectHabitLogs } from '@features/statistics/store/habitLogsSlice';
 import { format, subDays, eachDayOfInterval } from 'date-fns';
@@ -17,6 +7,14 @@ import { format, subDays, eachDayOfInterval } from 'date-fns';
 export function HabitTrendsChart() {
   const logs = useAppSelector(selectHabitLogs);
   const habits = useAppSelector((state) => state.habits.items);
+
+  const [RechartsModule, setRechartsModule] = React.useState<typeof import('recharts') | null>(
+    null,
+  );
+
+  React.useEffect(() => {
+    import('recharts').then(setRechartsModule);
+  }, []);
 
   const data = React.useMemo(() => {
     const end = new Date();
@@ -52,6 +50,22 @@ export function HabitTrendsChart() {
       };
     });
   }, [logs, habits]);
+
+  if (!RechartsModule) {
+    return (
+      <Card className="h-[400px]">
+        <CardHeader>
+          <CardTitle>Completion Trend (Last 30 Days)</CardTitle>
+        </CardHeader>
+        <CardContent className="h-[320px]">
+          <div className="h-full w-full animate-pulse bg-muted/20 rounded-lg" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } =
+    RechartsModule;
 
   return (
     <Card className="h-[400px]">

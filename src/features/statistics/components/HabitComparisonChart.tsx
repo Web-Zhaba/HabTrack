@@ -1,28 +1,28 @@
 import * as React from 'react';
 import { useAppSelector } from '@app/store/hooks';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { selectHabitLogs } from '@features/statistics/store/habitLogsSlice';
 import { subDays, isAfter, parseISO } from 'date-fns';
+
+const MAX_DISPLAY_HABITS = 10;
 
 export function HabitComparisonChart() {
   const logs = useAppSelector(selectHabitLogs);
   const habits = useAppSelector((state) => state.habits.items);
 
+  const [RechartsModule, setRechartsModule] = React.useState<typeof import('recharts') | null>(
+    null,
+  );
+
+  React.useEffect(() => {
+    import('recharts').then(setRechartsModule);
+  }, []);
+
   const data = React.useMemo(() => {
     const today = new Date();
     const thirtyDaysAgo = subDays(today, 30);
 
-    return habits.map((habit) => {
+    const habitData = habits.map((habit) => {
       let completed = 0;
       let planned = 0;
 
@@ -51,7 +51,27 @@ export function HabitComparisonChart() {
         planned,
       };
     });
+
+    // Сортируем по completed и берём топ-10
+    habitData.sort((a, b) => b.completed - a.completed);
+    return habitData.slice(0, MAX_DISPLAY_HABITS);
   }, [logs, habits]);
+
+  if (!RechartsModule) {
+    return (
+      <Card className="h-[400px]">
+        <CardHeader>
+          <CardTitle>Habit Comparison (Last 30 Days)</CardTitle>
+        </CardHeader>
+        <CardContent className="h-[320px]">
+          <div className="h-full w-full animate-pulse bg-muted/20 rounded-lg" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } =
+    RechartsModule;
 
   return (
     <Card className="h-[400px]">

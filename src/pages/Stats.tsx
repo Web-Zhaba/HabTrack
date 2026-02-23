@@ -1,25 +1,8 @@
-import { lazy, Suspense } from 'react';
 import { OverallStatsCards } from '@features/statistics/components/OverallStatsCards';
-
-const HabitTrendsChart = lazy(() =>
-  import('@features/statistics/components/HabitTrendsChart').then((module) => ({
-    default: module.HabitTrendsChart,
-  })),
-);
-const HabitComparisonChart = lazy(() =>
-  import('@features/statistics/components/HabitComparisonChart').then((module) => ({
-    default: module.HabitComparisonChart,
-  })),
-);
-const HabitDistributionChart = lazy(() =>
-  import('@features/statistics/components/HabitDistributionChart').then((module) => ({
-    default: module.HabitDistributionChart,
-  })),
-);
-
-function ChartSkeleton() {
-  return <div className="h-[300px] w-full animate-pulse bg-muted/20 rounded-lg" />;
-}
+import { HabitTrendsChart } from '@features/statistics/components/HabitTrendsChart';
+import { HabitComparisonChart } from '@features/statistics/components/HabitComparisonChart';
+import { HabitDistributionChart } from '@features/statistics/components/HabitDistributionChart';
+import { LazyChartWrapper } from '@features/statistics/components/LazyChartWrapper';
 
 export default function StatsPage() {
   return (
@@ -36,23 +19,23 @@ export default function StatsPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Тренды</h2>
-          <Suspense fallback={<ChartSkeleton />}>
+          <LazyChartWrapper>
             <HabitTrendsChart />
-          </Suspense>
+          </LazyChartWrapper>
         </div>
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Сравнение</h2>
-          <Suspense fallback={<ChartSkeleton />}>
+          <LazyChartWrapper>
             <HabitComparisonChart />
-          </Suspense>
+          </LazyChartWrapper>
         </div>
       </div>
 
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Распределение</h2>
-        <Suspense fallback={<ChartSkeleton />}>
+        <LazyChartWrapper>
           <HabitDistributionChart />
-        </Suspense>
+        </LazyChartWrapper>
       </div>
     </div>
   );
