@@ -2,13 +2,14 @@ import * as React from 'react';
 import { useAppSelector } from '@app/store/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { selectHabitLogs } from '@features/statistics/store/habitLogsSlice';
+import { selectActiveHabits } from '@features/habits/store/habitsSlice';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 const MAX_DISPLAY_HABITS = 8;
 
 export function HabitDistributionChart() {
   const logs = useAppSelector(selectHabitLogs);
-  const habits = useAppSelector((state) => state.habits.items);
+  const habits = useAppSelector(selectActiveHabits);
 
   const [RechartsModule, setRechartsModule] = React.useState<typeof import('recharts') | null>(
     null,

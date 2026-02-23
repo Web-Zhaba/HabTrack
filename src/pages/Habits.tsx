@@ -5,7 +5,12 @@ import { EmptyHabits } from '@features/habits/components/EmptyHabits';
 import { HabitCreateModal } from '@features/habits/components/HabitCreateModal';
 import { HabitCard } from '@features/habits/components/HabitCard';
 import type { Habit } from '@features/habits/types/habit.types';
-import { addHabit, removeHabit, updateHabit } from '@features/habits/store/habitsSlice';
+import {
+  addHabit,
+  removeHabit,
+  updateHabit,
+  selectActiveHabits,
+} from '@features/habits/store/habitsSlice';
 import { upsertManyHabitLogs } from '@features/statistics/store/habitLogsSlice';
 import { AnimatePresence } from 'motion/react';
 import BasicModal from '@/components/ui/smoothui/basic-modal';
@@ -14,7 +19,7 @@ import { CheckCheckIcon, TagIcon } from 'lucide-react';
 
 export default function HabitsPage() {
   const dispatch = useAppDispatch();
-  const habits = useAppSelector((state) => state.habits.items);
+  const habits = useAppSelector(selectActiveHabits);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<Habit | undefined>(undefined);
   const [habitToDelete, setHabitToDelete] = useState<string | null>(null);

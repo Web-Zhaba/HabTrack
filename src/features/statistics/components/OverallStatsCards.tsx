@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useAppSelector } from '@app/store/hooks';
 import {
+  selectHabitLogs,
   selectCurrentStreak,
   selectMaxStreak,
   selectCompletedDays,
-  selectHabitLogs,
 } from '@features/statistics/store/habitLogsSlice';
+import { selectActiveHabits } from '@features/habits/store/habitsSlice';
 import { subDays, format, eachDayOfInterval } from 'date-fns';
 import type { Habit } from '../../habits/types/habit.types';
 import { StreakCard } from './StreakCard';
@@ -52,8 +53,8 @@ function calculateSuccessRateForDays(
 }
 
 export function OverallStatsCards() {
-  const logs = useAppSelector((state) => state.habitLogs.items);
-  const habits = useAppSelector((state) => state.habits.items);
+  const logs = useAppSelector(selectHabitLogs);
+  const habits = useAppSelector(selectActiveHabits);
 
   // Используем централизованные селекторы для расчёта статистики
   const currentStreak = useAppSelector(selectCurrentStreak);

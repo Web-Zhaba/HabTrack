@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '@app/store/hooks';
 import { today, getLocalTimeZone, parseDate, type CalendarDate } from '@internationalized/date';
 import type { DateValue, RangeValue } from 'react-aria-components';
@@ -34,21 +34,15 @@ export const useHomeCalendar = () => {
 
   const [preset, setPreset] = useState<string>('Custom');
 
-  // Sync from Redux if it changes externally
-  useEffect(() => {
+  // Sync from Redux if it changes externally - используем прямой паттерн без setState в эффекте
+  // Если selectedRange изменился извне, просто обновляем range
+  const syncRangeFromRedux = useCallback(() => {
     if (selectedRange) {
       try {
         const start = parseDate(selectedRange.start);
         const end = parseDate(selectedRange.end);
-
-        // Only update if different to avoid loop/re-render
-        setRange((prev) => {
-          if (prev?.start.compare(start) === 0 && prev?.end.compare(end) === 0) {
-            return prev;
-          }
-          return { start, end };
-        });
-      } catch (e) {
+        setRange({ start, end });
+      } catch {
         // ignore invalid dates
       }
     }
@@ -111,5 +105,6 @@ export const useHomeCalendar = () => {
     handlePresetChange,
     handleStartChange,
     handleEndChange,
+    syncRangeFromRedux, // Экспортируем для ручного вызова при необходимости
   };
 };

@@ -8,13 +8,16 @@ import {
   selectCurrentStreak,
   selectMaxStreak,
   selectPerfectDaysCount,
+  selectHabitLogs,
+  selectSelectedRange,
 } from '@features/statistics/store/habitLogsSlice';
+import { selectHabits } from '@features/habits/store/habitsSlice';
 import { Trophy, TrendingDown, CheckCircle2, Flame, Award } from 'lucide-react';
 
 export function HabitsSummaryCard() {
-  const habits = useAppSelector((state) => state.habits.items);
-  const habitLogs = useAppSelector((state) => state.habitLogs.items);
-  const selectedRange = useAppSelector((state) => state.habitLogs.selectedRange);
+  const habits = useAppSelector(selectHabits);
+  const habitLogs = useAppSelector(selectHabitLogs);
+  const selectedRange = useAppSelector(selectSelectedRange);
 
   // Используем централизованные селекторы для расчёта статистики
   const currentStreak = useAppSelector(selectCurrentStreak);

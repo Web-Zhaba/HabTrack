@@ -1,10 +1,11 @@
-import HomeCalendarCard from '@features/statistics/components/HomeCalendarCard';
+import WeeklyCalendarCard from '@features/statistics/components/WeeklyCalendarCard';
 import { HabitsSummaryCard } from '@features/statistics/components/HabitsSummaryCard';
 import { useAppSelector } from '@app/store/hooks';
+import { selectActiveHabits } from '@features/habits/store/habitsSlice';
 import type { Habit } from '@features/habits/types/habit.types';
 
 export default function HomePage() {
-  const habits = useAppSelector((state) => state.habits.items) as Habit[];
+  const habits = useAppSelector(selectActiveHabits) as Habit[];
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
@@ -18,7 +19,7 @@ export default function HomePage() {
 
       <div className="flex flex-col md:flex-row gap-6">
         <div className="w-full md:w-auto">
-          <HomeCalendarCard />
+          <WeeklyCalendarCard />
         </div>
         <div className="flex-1">
           <HabitsSummaryCard />

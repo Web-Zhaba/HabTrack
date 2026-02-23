@@ -2,11 +2,12 @@ import * as React from 'react';
 import { useAppSelector } from '@app/store/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { selectHabitLogs } from '@features/statistics/store/habitLogsSlice';
+import { selectActiveHabits } from '@features/habits/store/habitsSlice';
 import { format, subDays, eachDayOfInterval } from 'date-fns';
 
 export function HabitTrendsChart() {
   const logs = useAppSelector(selectHabitLogs);
-  const habits = useAppSelector((state) => state.habits.items);
+  const habits = useAppSelector(selectActiveHabits);
 
   const [RechartsModule, setRechartsModule] = React.useState<typeof import('recharts') | null>(
     null,

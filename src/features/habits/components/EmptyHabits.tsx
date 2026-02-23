@@ -9,8 +9,7 @@ import {
   EmptyTitle,
 } from '@/components/ui/empty';
 import { Link } from 'react-router';
-import { FrownIcon } from 'lucide-react';
-import { ArrowUpRightIcon } from 'lucide-react';
+import { FrownIcon, ArrowUpRightIcon } from 'lucide-react';
 import { useAppDispatch } from '@app/store/hooks';
 import { addHabit } from '../store/habitsSlice';
 import type { Habit } from '../types/habit.types';

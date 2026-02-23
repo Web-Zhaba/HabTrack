@@ -7,10 +7,10 @@ import {
   ListBox,
   ListBoxItem,
   type DateValue,
+  type RangeValue,
 } from 'react-aria-components';
 import { ChevronDown } from 'lucide-react';
 import { DateField, DateInput } from '@/components/ui/date-field';
-import type { RangeValue } from 'react-aria-components';
 
 interface CalendarControlsProps {
   preset: string;

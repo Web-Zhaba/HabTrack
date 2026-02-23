@@ -2,13 +2,14 @@ import * as React from 'react';
 import { useAppSelector } from '@app/store/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { selectHabitLogs } from '@features/statistics/store/habitLogsSlice';
+import { selectActiveHabits } from '@features/habits/store/habitsSlice';
 import { subDays, isAfter, parseISO } from 'date-fns';
 
 const MAX_DISPLAY_HABITS = 10;
 
 export function HabitComparisonChart() {
   const logs = useAppSelector(selectHabitLogs);
-  const habits = useAppSelector((state) => state.habits.items);
+  const habits = useAppSelector(selectActiveHabits);
 
   const [RechartsModule, setRechartsModule] = React.useState<typeof import('recharts') | null>(
     null,

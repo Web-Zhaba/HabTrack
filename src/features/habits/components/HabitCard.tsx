@@ -11,15 +11,23 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import AnimatedProgressBar from '@/components/ui/smoothui/animated-progress-bar';
-import { Trash2Icon, CheckIcon, MinusIcon, PlusIcon, PencilIcon } from 'lucide-react';
+import {
+  Trash2Icon,
+  BadgeCheck,
+  MinusIcon,
+  PlusIcon,
+  PencilIcon,
+  BadgeIcon,
+  FileTextIcon,
+} from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '@app/store/hooks';
 import { upsertHabitLog } from '@features/statistics/store/habitLogsSlice';
 import type { HabitLog } from '@/types/HabitLog.types';
 import type { Habit } from '../types/habit.types';
-import { FileTextIcon } from 'lucide-react';
 import { HABIT_ICONS } from '../constants';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { CardTilt, CardTiltContent } from '@/components/ui/card-tilt';
 
 type HabitCardProps = {
   habit: Habit;
@@ -34,8 +42,6 @@ const CATEGORY_LABELS: Record<string, string> = {
   mindfulness: 'Осознанность',
   custom: 'Другое',
 };
-
-import { CardTilt, CardTiltContent } from '@/components/ui/card-tilt';
 
 export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: HabitCardProps) {
   const navigate = useNavigate();
@@ -259,7 +265,8 @@ export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: Ha
                   )
                 }
               >
-                {completedToday && <CheckIcon className="h-5 w-5" />}
+                {completedToday && <BadgeCheck className="h-5 w-5" />}
+                {!completedToday && <BadgeIcon className="h-5 w-5" />}
                 <span className="text-base">
                   {completedToday ? 'Выполнено сегодня' : 'Отметить выполнение'}
                 </span>
