@@ -1,7 +1,7 @@
-import { FiGithub } from "react-icons/fi";
-import { Button } from "@/components/ui/button";
+import { GithubIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-const APP_VERSION = "v0.2.0 Первая бета версия!";
+const APP_VERSION = 'v0.2.0 Первая бета версия!';
 
 export const Footer = () => {
   return (
@@ -11,12 +11,8 @@ export const Footer = () => {
           © {new Date().getFullYear()} Habit Tracker · {APP_VERSION}
         </p>
         <nav>
-          <Button
-            intent="plain"
-            className="text-muted-foreground"
-            size="sm"
-          >
-            <FiGithub size={20} />{" "}
+          <Button intent="plain" className="text-muted-foreground" size="sm">
+            <GithubIcon className="size-5" />{' '}
             <a href="https://github.com/Web-Zhaba/HabTrack#">GitHub</a>
           </Button>
         </nav>

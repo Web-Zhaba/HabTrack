@@ -1,12 +1,14 @@
-import * as React from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "../../../shared/components/ui/card"
-import AnimatedProgressBar from "../../../shared/components/ui/smoothui/animated-progress-bar"
-import { useSelector } from "react-redux"
-import type { RootState } from "../../../app/store"
-import { calculateHabitRangeProgress, type HabitSummary } from "../../statistics/store/habitLogsSlice"
-import type { Habit } from "../../habits/types/habit.types"
-import type { HabitLog } from "../../../shared/types/HabitLog.types"
-import { Trophy, TrendingDown, CheckCircle2, Flame } from "lucide-react"
+import * as React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import AnimatedProgressBar from '@/components/ui/smoothui/animated-progress-bar';
+import { useAppSelector } from '@app/store/hooks';
+import {
+  calculateHabitRangeProgress,
+  type HabitSummary,
+} from '@features/statistics/store/habitLogsSlice';
+import type { Habit } from '@features/habits/types/habit.types';
+import type { HabitLog } from '@/types/HabitLog.types';
+import { Trophy, TrendingDown, CheckCircle2, Flame } from 'lucide-react';
 
 function calculateCurrentStreak(habits: Habit[], logs: HabitLog[]): number {
   if (!habits.length || !logs.length) return 0;
@@ -16,17 +18,17 @@ function calculateCurrentStreak(habits: Habit[], logs: HabitLog[]): number {
 
   const isCompleted = (log: HabitLog, habit: Habit) => {
     if (habit.type === 'quantitative') {
-        return (log.value ?? 0) >= (habit.target ?? 1);
+      return (log.value ?? 0) >= (habit.target ?? 1);
     }
     return log.completed === true;
   };
 
-  const habitsMap = new Map(habits.map(h => [h.id, h]));
+  const habitsMap = new Map(habits.map((h) => [h.id, h]));
 
-  logs.forEach(log => {
+  logs.forEach((log) => {
     const habit = habitsMap.get(log.habitId);
     if (habit && isCompleted(log, habit)) {
-        completedDates.add(log.date);
+      completedDates.add(log.date);
     }
   });
 
@@ -39,37 +41,37 @@ function calculateCurrentStreak(habits: Habit[], logs: HabitLog[]): number {
 
   let checkDate = new Date(today);
   let currentStreak = 0;
-  
+
   // Check today
   if (completedDates.has(formatDate(checkDate))) {
-      currentStreak++;
-      checkDate.setDate(checkDate.getDate() - 1);
+    currentStreak++;
+    checkDate.setDate(checkDate.getDate() - 1);
   } else {
-      // If today is not done, check yesterday
-      checkDate.setDate(checkDate.getDate() - 1);
-      if (!completedDates.has(formatDate(checkDate))) {
-          return 0; 
-      }
-      // If yesterday is done, we start counting from yesterday
+    // If today is not done, check yesterday
+    checkDate.setDate(checkDate.getDate() - 1);
+    if (!completedDates.has(formatDate(checkDate))) {
+      return 0;
+    }
+    // If yesterday is done, we start counting from yesterday
   }
 
   // Check previous days
   while (true) {
-      if (completedDates.has(formatDate(checkDate))) {
-          currentStreak++;
-          checkDate.setDate(checkDate.getDate() - 1);
-      } else {
-          break;
-      }
+    if (completedDates.has(formatDate(checkDate))) {
+      currentStreak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
   }
-  
+
   return currentStreak;
 }
 
 export function HabitsSummaryCard() {
-  const habits = useSelector((state: RootState) => state.habits.items) as Habit[]
-  const habitLogs = useSelector((state: RootState) => state.habitLogs.items) as HabitLog[]
-  const selectedRange = useSelector((state: RootState) => state.habitLogs.selectedRange)
+  const habits = useAppSelector((state) => state.habits.items) as Habit[];
+  const habitLogs = useAppSelector((state) => state.habitLogs.items) as HabitLog[];
+  const selectedRange = useAppSelector((state) => state.habitLogs.selectedRange);
 
   const currentStreak = React.useMemo(() => {
     return calculateCurrentStreak(habits, habitLogs);
@@ -77,19 +79,19 @@ export function HabitsSummaryCard() {
 
   const summary: HabitSummary = React.useMemo(() => {
     if (!selectedRange) {
-      return { totalCompleted: 0, totalPlanned: 0, percent: 0 }
+      return { totalCompleted: 0, totalPlanned: 0, percent: 0 };
     }
-    return calculateHabitRangeProgress(habits, habitLogs, selectedRange)
-  }, [habits, habitLogs, selectedRange])
+    return calculateHabitRangeProgress(habits, habitLogs, selectedRange);
+  }, [habits, habitLogs, selectedRange]);
 
   if (!selectedRange) {
-     return (
-        <Card>
-            <CardContent className="p-6 text-center text-muted-foreground">
-                Выберите диапазон дат, чтобы просмотреть сводку.
-            </CardContent>
-        </Card>
-     )
+    return (
+      <Card>
+        <CardContent className="p-6 text-center text-muted-foreground">
+          Выберите диапазон дат, чтобы просмотреть сводку.
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -128,7 +130,7 @@ export function HabitsSummaryCard() {
           </div>
         </div>
 
-        {(summary.bestHabit || summary.worstHabit) ? (
+        {summary.bestHabit || summary.worstHabit ? (
           <div className="space-y-3 pt-2 border-t mt-auto">
             {summary.bestHabit && (
               <div className="flex items-center justify-between">
@@ -137,8 +139,8 @@ export function HabitsSummaryCard() {
                   <span className="text-sm font-medium">Лучший результат</span>
                 </div>
                 <div className="text-right">
-                    <div className="text-sm font-bold">{summary.bestHabit.name}</div>
-                    <div className="text-xs text-muted-foreground">{summary.bestHabit.percent}%</div>
+                  <div className="text-sm font-bold">{summary.bestHabit.name}</div>
+                  <div className="text-xs text-muted-foreground">{summary.bestHabit.percent}%</div>
                 </div>
               </div>
             )}
@@ -149,16 +151,16 @@ export function HabitsSummaryCard() {
                   <span className="text-sm font-medium">Нужно постараться</span>
                 </div>
                 <div className="text-right">
-                    <div className="text-sm font-bold">{summary.worstHabit.name}</div>
-                    <div className="text-xs text-muted-foreground">{summary.worstHabit.percent}%</div>
+                  <div className="text-sm font-bold">{summary.worstHabit.name}</div>
+                  <div className="text-xs text-muted-foreground">{summary.worstHabit.percent}%</div>
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <div className="mt-auto" /> 
+          <div className="mt-auto" />
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

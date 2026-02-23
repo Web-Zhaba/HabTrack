@@ -27,18 +27,18 @@ import {
   Utensils,
   BedDouble,
   Smile,
-  type LucideIcon
-} from "lucide-react"
+  type LucideIcon,
+} from 'lucide-react';
 
 export const COLOR_OPTIONS = [
-  { value: "--chart-1", label: "Основной", swatch: "#22c55e" },
-  { value: "--chart-2", label: "Второй", swatch: "#3b82f6" },
-  { value: "--chart-3", label: "Третий", swatch: "#f97316" },
-  { value: "--chart-4", label: "Четвёртый", swatch: "#a855f7" },
-  { value: "--chart-5", label: "Пятый", swatch: "#6366f1" },
-] as const
+  { value: '--chart-1', label: 'Основной', swatch: '#22c55e' },
+  { value: '--chart-2', label: 'Второй', swatch: '#3b82f6' },
+  { value: '--chart-3', label: 'Третий', swatch: '#f97316' },
+  { value: '--chart-4', label: 'Четвёртый', swatch: '#a855f7' },
+  { value: '--chart-5', label: 'Пятый', swatch: '#6366f1' },
+] as const;
 
-export type ColorToken = (typeof COLOR_OPTIONS)[number]["value"]
+export type ColorToken = (typeof COLOR_OPTIONS)[number]['value'];
 
 export const HABIT_ICONS: Record<string, LucideIcon> = {
   activity: Activity,
@@ -69,10 +69,4 @@ export const HABIT_ICONS: Record<string, LucideIcon> = {
   photo: Camera,
   writing: PenTool,
   fun: Smile,
-}
-
-// Keep for backward compatibility or simple key referencing
-export const iconOptions = Object.keys(HABIT_ICONS).reduce((acc, key) => {
-  acc[key] = key
-  return acc
-}, {} as Record<string, string>)
+};

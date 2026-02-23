@@ -1,23 +1,18 @@
 import { lazy, Suspense } from 'react';
-import { OverallStatsCards } from '../features/statistics/components/OverallStatsCards';
+import { OverallStatsCards } from '@features/statistics/components/OverallStatsCards';
 
-// const HabitHeatmap = lazy(() =>
-//   import('../features/statistics/components/HabitHeatmap').then((module) => ({
-//     default: module.HabitHeatmap,
-//   })),
-// );
 const HabitTrendsChart = lazy(() =>
-  import('../features/statistics/components/HabitTrendsChart').then((module) => ({
+  import('@features/statistics/components/HabitTrendsChart').then((module) => ({
     default: module.HabitTrendsChart,
   })),
 );
 const HabitComparisonChart = lazy(() =>
-  import('../features/statistics/components/HabitComparisonChart').then((module) => ({
+  import('@features/statistics/components/HabitComparisonChart').then((module) => ({
     default: module.HabitComparisonChart,
   })),
 );
 const HabitDistributionChart = lazy(() =>
-  import('../features/statistics/components/HabitDistributionChart').then((module) => ({
+  import('@features/statistics/components/HabitDistributionChart').then((module) => ({
     default: module.HabitDistributionChart,
   })),
 );
@@ -37,13 +32,6 @@ export default function StatsPage() {
       </div>
 
       <OverallStatsCards />
-
-      {/*<div className="space-y-4">
-        <h2 className="text-xl font-semibold">Активность по дням недели</h2>
-        <Suspense fallback={<ChartSkeleton />}>
-          <HabitHeatmap />
-        </Suspense>
-      </div>*/}
 
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-4">

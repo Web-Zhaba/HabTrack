@@ -5,23 +5,23 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
-import { TbFileSad } from "react-icons/tb";
+} from '@/components/ui/empty';
+import { FileXIcon } from 'lucide-react';
 
 export default function NotFoundPage() {
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon" className="size-15">
-          <TbFileSad />
+          <FileXIcon />
         </EmptyMedia>
         <EmptyTitle className="text-3xl">404</EmptyTitle>
         <EmptyDescription>
-          Вы попали куда-то не туда, вернитесь на одну из страниц с помощью кнопок в навигационном меню.
+          Вы попали куда-то не туда, вернитесь на одну из страниц с помощью кнопок в навигационном
+          меню.
         </EmptyDescription>
       </EmptyHeader>
-      <EmptyContent className="flex-row justify-center gap-2">
-      </EmptyContent>
+      <EmptyContent className="flex-row justify-center gap-2"></EmptyContent>
     </Empty>
-  )
+  );
 }

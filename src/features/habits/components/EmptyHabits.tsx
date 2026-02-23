@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Empty,
   EmptyContent,
@@ -7,38 +7,38 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
-import { Link } from "react-router";
-import { PiMaskSad } from "react-icons/pi";
-import { ArrowUpRightIcon } from "lucide-react"
-import { useDispatch } from "react-redux"
-import { addHabit } from "../store/habitsSlice"
-import type { Habit } from "../types/habit.types"
-import { HabitCreateModal } from "./HabitCreateModal"
+} from '@/components/ui/empty';
+import { Link } from 'react-router';
+import { FrownIcon } from 'lucide-react';
+import { ArrowUpRightIcon } from 'lucide-react';
+import { useAppDispatch } from '@app/store/hooks';
+import { addHabit } from '../store/habitsSlice';
+import type { Habit } from '../types/habit.types';
+import { HabitCreateModal } from './HabitCreateModal';
 
 export function EmptyHabits() {
-  const dispatch = useDispatch()
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const dispatch = useAppDispatch();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleOpenCreate = () => {
-    setIsCreateModalOpen(true)
-  }
+    setIsCreateModalOpen(true);
+  };
 
   const handleCloseCreate = () => {
-    setIsCreateModalOpen(false)
-  }
+    setIsCreateModalOpen(false);
+  };
 
   const handleSubmit = (habit: Habit) => {
-    dispatch(addHabit(habit))
-    handleCloseCreate()
-  }
+    dispatch(addHabit(habit));
+    handleCloseCreate();
+  };
 
   return (
     <>
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <PiMaskSad />
+            <FrownIcon />
           </EmptyMedia>
           <EmptyTitle>Ещё нет привычек</EmptyTitle>
           <EmptyDescription>
@@ -54,17 +54,17 @@ export function EmptyHabits() {
           </Button>
         </EmptyContent>
         <Link to="/login">
-          <Button
-            intent="plain"
-            className="text-muted-foreground"
-            size="sm"
-          >
-              Войти в аккаунт <ArrowUpRightIcon />
+          <Button intent="plain" className="text-muted-foreground" size="sm">
+            Войти в аккаунт <ArrowUpRightIcon />
           </Button>
         </Link>
       </Empty>
 
-      <HabitCreateModal isOpen={isCreateModalOpen} onClose={handleCloseCreate} onSubmit={handleSubmit} />
+      <HabitCreateModal
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseCreate}
+        onSubmit={handleSubmit}
+      />
     </>
-  )
+  );
 }

@@ -2,16 +2,8 @@
 
 import * as React from 'react';
 import { useLocation, Link } from 'react-router';
-import { motion } from 'framer-motion';
-import {
-  CheckCircle,
-  BarChart3,
-  Users,
-  Settings,
-  Moon,
-  Sun,
-  Home
-} from 'lucide-react';
+import { motion } from 'motion/react';
+import { CheckCircle, BarChart3, Users, Settings, Moon, Sun, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/ThemeProvider';
 import { LogoIcon } from '@/components/logo';
@@ -56,7 +48,7 @@ export function NavbarFlow() {
 
   const handleNavigation = (href: string, label: string, e: React.MouseEvent) => {
     console.log(`[Navigation] User clicked "${label}" to navigate to: ${href}`);
-    
+
     // Basic route validation check (client-side)
     if (!href.startsWith('/')) {
       console.error(`[Navigation Error] Invalid route detected: ${href}`);
@@ -71,7 +63,6 @@ export function NavbarFlow() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 pointer-events-none">
       <div className="pointer-events-auto w-full max-w-5xl px-4 flex items-center justify-between">
-        
         {/* Left: Logo (Home Link) */}
         <Link
           to="/"
@@ -85,18 +76,19 @@ export function NavbarFlow() {
         {/* Center: Navigation Pill Strip */}
         <nav className="flex items-center p-1 bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-sm text-foreground gap-1 md:gap-2 justify-between overflow-x-auto no-scrollbar max-w-[calc(100vw-7rem)] md:max-w-none">
           {NAV_ITEMS.map((item) => {
-            const isActive = location.pathname === item.href || (item.href === '/' && location.pathname === '/');
-            
+            const isActive =
+              location.pathname === item.href || (item.href === '/' && location.pathname === '/');
+
             return (
               <Link
                 key={item.href}
                 to={item.href}
                 onClick={(e) => handleNavigation(item.href, item.label, e)}
                 className={cn(
-                  "relative group flex items-center justify-center gap-2 px-2 md:px-4 h-10 rounded-full transition-colors duration-300 min-w-[40px] md:min-w-0",
+                  'relative group flex items-center justify-center gap-2 px-2 md:px-4 h-10 rounded-full transition-colors duration-300 min-w-[40px] md:min-w-0',
                   isActive
-                    ? "text-primary-foreground font-medium hover:-translate-y-0.5 transition-all duration-500"
-                    : "text-muted-foreground hover:bg-muted-foreground/20 hover:text-foreground"
+                    ? 'text-primary-foreground font-medium hover:-translate-y-0.5 transition-all duration-500'
+                    : 'text-muted-foreground hover:bg-muted-foreground/20 hover:text-foreground',
                 )}
                 aria-label={item.label}
               >
@@ -105,10 +97,10 @@ export function NavbarFlow() {
                     layoutId="navbar-active"
                     className="absolute inset-0 bg-primary rounded-full shadow-md group-hover:shadow-[0_3px_0_0_color-mix(in_oklab,var(--primary),black_20%)] transition-shadow duration-500"
                     transition={{
-                      type: "spring",
+                      type: 'spring',
                       stiffness: 300,
                       damping: 20,
-                      mass: 0.8
+                      mass: 0.8,
                     }}
                     style={{ zIndex: 0 }}
                   />
@@ -124,19 +116,18 @@ export function NavbarFlow() {
 
         {/* Right: Theme Toggle */}
         <div className="flex items-center justify-center bg-background/40 backdrop-blur-xl border border-border/40 rounded-full p-1 shadow-sm h-12 px-2 shrink-0">
-             <AnimatedToggle
-                checked={isDark}
-                onChange={handleThemeChange}
-                variant="icon"
-                size="lg"
-                icons={{
-                    on: <Moon className="w-4 h-4 text-black dark:text-white fill-black" />, // Moon for Dark mode (as per image)
-                    off: <Sun className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                }}
-                className="shadow-sm"
-             />
+          <AnimatedToggle
+            checked={isDark}
+            onChange={handleThemeChange}
+            variant="icon"
+            size="lg"
+            icons={{
+              on: <Moon className="w-4 h-4 text-black dark:text-white fill-black" />, // Moon for Dark mode (as per image)
+              off: <Sun className="w-4 h-4 text-yellow-500 fill-yellow-500" />,
+            }}
+            className="shadow-sm"
+          />
         </div>
-
       </div>
     </header>
   );

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardAction,
@@ -7,26 +7,26 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Controller, useForm, type SubmitHandler } from "react-hook-form"
-import { TbMail } from "react-icons/tb"
-import { Link } from "react-router"
-import AnimatedInput from "@/components/ui/smoothui/animated-input"
+} from '@/components/ui/card';
+import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
+import { Mail } from 'lucide-react';
+import { Link } from 'react-router';
+import AnimatedInput from '@/components/ui/smoothui/animated-input';
 
 interface ResetForm {
-  email: string
+  email: string;
 }
 
 export default function ResetPasswordPage() {
   const { control, handleSubmit, formState } = useForm<ResetForm>({
-    mode: "onChange",
-  })
+    mode: 'onChange',
+  });
 
-  const emailError = formState.errors.email?.message
+  const emailError = formState.errors.email?.message;
 
   const onSubmit: SubmitHandler<ResetForm> = (data) => {
-    console.log(data)
-  }
+    console.log(data);
+  };
 
   return (
     <Card className="w-full max-w-sm border border-border/70 bg-background/80 backdrop-blur-sm shadow-lg animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-300">
@@ -35,7 +35,8 @@ export default function ResetPasswordPage() {
           Восстановление пароля
         </CardTitle>
         <CardDescription>
-          Укажите email, на который вы регистрировали аккаунт. Мы отправим вам письмо с инструкцией по восстановлению.
+          Укажите email, на который вы регистрировали аккаунт. Мы отправим вам письмо с инструкцией
+          по восстановлению.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -45,11 +46,10 @@ export default function ResetPasswordPage() {
               name="email"
               control={control}
               rules={{
-                required: "Это поле обязательно",
+                required: 'Это поле обязательно',
                 pattern: {
-                  value:
-                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
-                  message: "Некорректный email адрес",
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
+                  message: 'Некорректный email адрес',
                 },
               }}
               render={({ field, fieldState }) => (
@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
                     value={field.value}
                     onChange={field.onChange}
                     disabled={field.disabled}
-                    icon={<TbMail />}
+                    icon={<Mail />}
                     type="email"
                     autoComplete="email"
                   />
@@ -83,9 +83,7 @@ export default function ResetPasswordPage() {
       </CardContent>
       <CardFooter className="flex flex-col gap-2 pt-2">
         <CardAction className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">
-            Вспомнили пароль?
-          </span>
+          <span className="text-xs text-muted-foreground">Вспомнили пароль?</span>
           <Link to="/login">
             <Button intent="plain" size="sm">
               Войти
@@ -93,9 +91,7 @@ export default function ResetPasswordPage() {
           </Link>
         </CardAction>
         <CardAction className="flex items-center justify-between">
-          <span className="text-xs text-muted-foreground">
-            Нет аккаунта?
-          </span>
+          <span className="text-xs text-muted-foreground">Нет аккаунта?</span>
           <Link to="/register">
             <Button intent="plain" size="sm">
               Регистрация
@@ -104,5 +100,5 @@ export default function ResetPasswordPage() {
         </CardAction>
       </CardFooter>
     </Card>
-  )
+  );
 }

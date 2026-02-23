@@ -1,13 +1,13 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import habitsReducer from "../../features/habits/store/habitsSlice";
-import habitLogsReducer from "../../features/statistics/store/habitLogsSlice";
-// import authReducer from '../../features/auth/store/authSlice';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import habitsReducer from '@features/habits/store/habitsSlice';
+import habitLogsReducer from '@features/statistics/store/habitLogsSlice';
+// import authReducer from '@features/auth/store/authSlice';
 
 function loadState() {
-  if (typeof window === "undefined") return undefined;
+  if (typeof window === 'undefined') return undefined;
 
   try {
-    const serialized = window.localStorage.getItem("habtrack-data");
+    const serialized = window.localStorage.getItem('habtrack-data');
     if (!serialized) return undefined;
     return JSON.parse(serialized);
   } catch {
@@ -16,11 +16,11 @@ function loadState() {
 }
 
 function saveState(state: unknown) {
-  if (typeof window === "undefined") return;
+  if (typeof window === 'undefined') return;
 
   try {
     const serialized = JSON.stringify(state);
-    window.localStorage.setItem("habtrack-data", serialized);
+    window.localStorage.setItem('habtrack-data', serialized);
   } catch {
     // ignore
   }

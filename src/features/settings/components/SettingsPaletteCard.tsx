@@ -3,7 +3,16 @@ import { useTheme } from '@/components/ThemeProvider';
 import { PaletteSwatchButton } from '@/components/ui/palette-swatch-button';
 
 const paletteOptions: {
-  id: 'default' | 'forest' | 'sunset' | 'ocean' | 'astro';
+  id:
+    | 'default'
+    | 'forest'
+    | 'sunset'
+    | 'ocean'
+    | 'astro'
+    | 'retro'
+    | 'sakura'
+    | 'midnight'
+    | 'nord';
   label: string;
   description: string;
 }[] = [
@@ -26,11 +35,35 @@ const paletteOptions: {
     id: 'ocean',
     label: 'Океан',
     description: 'Свежая морская палитра с более округлыми формами.',
-    },
+  },
   {
     id: 'astro',
     label: 'Астро',
-    description: 'Красочная палитра с выраженными оранжевыми и синими тонами'
+    description: 'Красочная палитра с выраженными оранжевыми и синими тонами',
+  },
+  {
+    id: 'retro',
+    label: 'Ретро',
+    description:
+      'Терминальная эстетика: фосфорный экран в тёмном режиме, классический системный интерфейс в светлом.',
+  },
+  {
+    id: 'sakura',
+    label: 'Сакура',
+    description:
+      'Японская эстетика ханами — нежные розово-лавандовые тона, мягкие тени и округлые формы.',
+  },
+  {
+    id: 'midnight',
+    label: 'Полночь',
+    description:
+      'Ночной город — электрический индиго и холодный циан, острые контрасты и драматическая глубина.',
+  },
+  {
+    id: 'nord',
+    label: 'Норд',
+    description:
+      'Арктическая Скандинавия — приглушённые полярные синие, снежные тона и акценты северного сияния.',
   },
 ];
 

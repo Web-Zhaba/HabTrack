@@ -1,75 +1,74 @@
-import * as React from "react"
-import { useSelector } from "react-redux"
-import type { RootState } from "../../../app/store"
-import { Card, CardContent, CardHeader, CardTitle } from "../../../shared/components/ui/card"
-import { selectHabitLogs } from "../../statistics/store/habitLogsSlice"
-import { Flame, Trophy, CheckCircle, BarChart } from "lucide-react"
-import { subDays, format, parseISO } from "date-fns"
+import * as React from 'react';
+import { useAppSelector } from '@app/store/hooks';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { selectHabitLogs } from '@features/statistics/store/habitLogsSlice';
+import { Flame, Trophy, CheckCircle, BarChart } from 'lucide-react';
+import { subDays, format, parseISO } from 'date-fns';
 
 export function OverallStatsCards() {
-  const logs = useSelector(selectHabitLogs)
-  const habits = useSelector((state: RootState) => state.habits.items)
+  const logs = useAppSelector(selectHabitLogs);
+  const habits = useAppSelector((state) => state.habits.items);
 
   const stats = React.useMemo(() => {
-    let totalCompleted = 0
-    const completedDays = new Set<string>()
+    let totalCompleted = 0;
+    const completedDays = new Set<string>();
 
-    logs.forEach(log => {
+    logs.forEach((log) => {
       if (log.completed || (log.value && log.value > 0)) {
-        totalCompleted++
-        completedDays.add(log.date)
+        totalCompleted++;
+        completedDays.add(log.date);
       }
-    })
+    });
 
     // Calculate streak
-    let currentStreak = 0
-    const today = new Date()
-    let checkDate = today
-    
+    let currentStreak = 0;
+    const today = new Date();
+    let checkDate = today;
+
     // Check today or yesterday (if today not completed yet)
-    if (!completedDays.has(format(today, "yyyy-MM-dd"))) {
-        checkDate = subDays(today, 1)
+    if (!completedDays.has(format(today, 'yyyy-MM-dd'))) {
+      checkDate = subDays(today, 1);
     }
 
-    while (completedDays.has(format(checkDate, "yyyy-MM-dd"))) {
-        currentStreak++
-        checkDate = subDays(checkDate, 1)
+    while (completedDays.has(format(checkDate, 'yyyy-MM-dd'))) {
+      currentStreak++;
+      checkDate = subDays(checkDate, 1);
     }
 
     // Max streak (simplified: max consecutive days in logs)
     // This requires sorting logs by date and iterating
-    const sortedDates = Array.from(completedDays).sort()
-    let maxStreak = 0
-    let tempStreak = 0
-    let lastDate: Date | null = null
+    const sortedDates = Array.from(completedDays).sort();
+    let maxStreak = 0;
+    let tempStreak = 0;
+    let lastDate: Date | null = null;
 
     for (const dateStr of sortedDates) {
-        const date = parseISO(dateStr)
-        if (!lastDate) {
-            tempStreak = 1
+      const date = parseISO(dateStr);
+      if (!lastDate) {
+        tempStreak = 1;
+      } else {
+        const diff = date.getTime() - lastDate.getTime();
+        const diffDays = diff / (1000 * 3600 * 24);
+        if (diffDays === 1) {
+          tempStreak++;
         } else {
-            const diff = date.getTime() - lastDate.getTime()
-            const diffDays = diff / (1000 * 3600 * 24)
-            if (diffDays === 1) {
-                tempStreak++
-            } else {
-                tempStreak = 1
-            }
+          tempStreak = 1;
         }
-        if (tempStreak > maxStreak) maxStreak = tempStreak
-        lastDate = date
+      }
+      if (tempStreak > maxStreak) maxStreak = tempStreak;
+      lastDate = date;
     }
 
-    const totalPlanned = habits.length * 30 // Approx for last month
-    const successRate = totalPlanned > 0 ? Math.round((totalCompleted / totalPlanned) * 100) : 0
+    const totalPlanned = habits.length * 30; // Approx for last month
+    const successRate = totalPlanned > 0 ? Math.round((totalCompleted / totalPlanned) * 100) : 0;
 
     return {
-        currentStreak,
-        maxStreak,
-        totalCompleted,
-        successRate
-    }
-  }, [logs, habits])
+      currentStreak,
+      maxStreak,
+      totalCompleted,
+      successRate,
+    };
+  }, [logs, habits]);
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -114,5 +113,5 @@ export function OverallStatsCards() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

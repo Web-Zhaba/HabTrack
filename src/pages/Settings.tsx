@@ -1,7 +1,7 @@
-import SettingsPaletteCard from "../features/settings/components/SettingsPaletteCard"
-import SettingsLocaleCard from "../features/settings/components/SettingsLocaleCard"
-import SettingsDataCard from "../features/settings/components/SettingsDataCard"
-import SettingsExtrasCard from "../features/settings/components/SettingsExtrasCard"
+import SettingsPaletteCard from '@features/settings/components/SettingsPaletteCard';
+import SettingsLocaleCard from '@features/settings/components/SettingsLocaleCard';
+import SettingsDataCard from '@features/settings/components/SettingsDataCard';
+import SettingsExtrasCard from '@features/settings/components/SettingsExtrasCard';
 
 export default function SettingsPage() {
   return (
@@ -21,5 +21,5 @@ export default function SettingsPage() {
 
       <SettingsExtrasCard />
     </div>
-  )
+  );
 }

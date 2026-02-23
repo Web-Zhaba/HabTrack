@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "tags": ["-lintignore"],
+  "entry": ["react-router.config.ts"],
+  "project": ["src/**/*.{ts,tsx}", "scripts/**/*.{js,mjs}"],
+  "paths": {
+    "@/*": ["./src/shared/*"],
+    "@assets/*": ["./src/assets/*"],
+    "src/*": ["./src/*"]
+  },
+  "ignore": ["src/features/auth/**", "src/**/*.test.{ts,tsx}", "scripts/take-screenshots.js"],
+  "ignoreDependencies": ["tw-animate-css", "prettier", "shadcn", "@react-router/dev"],
+  "ignoreExportsUsedInFile": {
+    "interface": true,
+    "type": true
+  }
+}

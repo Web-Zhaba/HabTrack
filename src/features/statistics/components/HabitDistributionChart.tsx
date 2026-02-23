@@ -1,32 +1,35 @@
-import * as React from "react"
-import { useSelector } from "react-redux"
-import type { RootState } from "../../../app/store"
+import * as React from 'react';
+import { useAppSelector } from '@app/store/hooks';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle } from "../../../shared/components/ui/card"
-import { selectHabitLogs } from "../../statistics/store/habitLogsSlice"
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { selectHabitLogs } from '@features/statistics/store/habitLogsSlice';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
 export function HabitDistributionChart() {
-  const logs = useSelector(selectHabitLogs)
-  const habits = useSelector((state: RootState) => state.habits.items)
+  const logs = useAppSelector(selectHabitLogs);
+  const habits = useAppSelector((state) => state.habits.items);
 
   const data = React.useMemo(() => {
-    return habits.map(habit => {
-        let totalValue = 0
-        logs.filter(l => l.habitId === habit.id).forEach(log => {
+    return habits
+      .map((habit) => {
+        let totalValue = 0;
+        logs
+          .filter((l) => l.habitId === habit.id)
+          .forEach((log) => {
             if (habit.type === 'quantitative') {
-                totalValue += log.value || 0
+              totalValue += log.value || 0;
             } else {
-                if (log.completed) totalValue += 1
+              if (log.completed) totalValue += 1;
             }
-        })
+          });
         return {
-            name: habit.name,
-            value: totalValue
-        }
-    }).filter(d => d.value > 0)
-  }, [logs, habits])
+          name: habit.name,
+          value: totalValue,
+        };
+      })
+      .filter((d) => d.value > 0);
+  }, [logs, habits]);
 
   return (
     <Card className="h-[400px]">
@@ -56,5 +59,5 @@ export function HabitDistributionChart() {
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

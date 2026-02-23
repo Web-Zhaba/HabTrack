@@ -1,41 +1,40 @@
-import { useState } from "react"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { FiDownload, FiTrash2 } from "react-icons/fi"
-import BasicModal from "@/components/ui/smoothui/basic-modal"
-import { useDispatch } from "react-redux"
-import type { AppDispatch } from "../../../app/store"
-import { setHabits } from "src/features/habits/store/habitsSlice"
-import { clearHabitLogs } from "src/features/statistics/store/habitLogsSlice"
+import { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Download, Trash2 } from 'lucide-react';
+import BasicModal from '@/components/ui/smoothui/basic-modal';
+import { useAppDispatch } from '@app/store/hooks';
+import { setHabits } from '@features/habits/store/habitsSlice';
+import { clearHabitLogs } from '@features/statistics/store/habitLogsSlice';
 
 export default function SettingsDataCard() {
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false)
-  const dispatch = useDispatch<AppDispatch>()
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleExportData = () => {
-    const data = window.localStorage.getItem("habtrack-data") ?? "{}"
-    const blob = new Blob([data], { type: "application/json" })
-    const url = URL.createObjectURL(blob)
+    const data = window.localStorage.getItem('habtrack-data') ?? '{}';
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
 
-    const link = document.createElement("a")
-    link.href = url
-    link.download = "habtrack-export.json"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  }
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'habtrack-export.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const handleResetData = () => {
-    setIsResetModalOpen(true)
-  }
+    setIsResetModalOpen(true);
+  };
 
   const confirmResetData = () => {
-    dispatch(setHabits([]))
-    dispatch(clearHabitLogs())
-    window.localStorage.removeItem("habtrack-data")
-    setIsResetModalOpen(false)
-  }
+    dispatch(setHabits([]));
+    dispatch(clearHabitLogs());
+    window.localStorage.removeItem('habtrack-data');
+    setIsResetModalOpen(false);
+  };
 
   return (
     <>
@@ -61,7 +60,7 @@ export default function SettingsDataCard() {
               className="w-full sm:w-auto"
               onClick={handleExportData}
             >
-              <FiDownload />
+              <Download />
               Экспортировать
             </Button>
           </div>
@@ -80,7 +79,7 @@ export default function SettingsDataCard() {
               className="w-full sm:w-auto"
               onClick={handleResetData}
             >
-              <FiTrash2 />
+              <Trash2 />
               Очистить данные
             </Button>
           </div>
@@ -99,23 +98,15 @@ export default function SettingsDataCard() {
             отменить.
           </p>
           <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <Button
-              type="button"
-              intent="outline"
-              onClick={() => setIsResetModalOpen(false)}
-            >
+            <Button type="button" intent="outline" onClick={() => setIsResetModalOpen(false)}>
               Отмена
             </Button>
-            <Button
-              type="button"
-              intent="danger"
-              onClick={confirmResetData}
-            >
+            <Button type="button" intent="danger" onClick={confirmResetData}>
               Очистить данные
             </Button>
           </div>
         </div>
       </BasicModal>
     </>
-  )
+  );
 }

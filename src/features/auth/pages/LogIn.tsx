@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardAction,
@@ -7,42 +7,38 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Controller, useForm, type SubmitHandler } from "react-hook-form"
-import { TbLockPassword, TbMail } from "react-icons/tb"
-import { Link } from "react-router"
-import AnimatedInput from "@/components/ui/smoothui/animated-input"
+} from '@/components/ui/card';
+import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
+import { Mail, KeyRound } from 'lucide-react';
+import { Link } from 'react-router';
+import AnimatedInput from '@/components/ui/smoothui/animated-input';
 
 interface IForm {
-  'email': string
-  'password': string
+  email: string;
+  password: string;
 }
 
 export default function LogInPage() {
   const { control, handleSubmit, formState } = useForm<IForm>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      email: "test@test.com",
-      password: "pass",
+      email: 'test@test.com',
+      password: 'pass',
     },
-  })
+  });
 
-  const emailError = formState.errors.email?.message
-  const passwordError = formState.errors.password?.message
+  const emailError = formState.errors.email?.message;
+  const passwordError = formState.errors.password?.message;
 
   const onSubmit: SubmitHandler<IForm> = (data) => {
-    console.log(data.email, data.password)
-  }
+    console.log(data.email, data.password);
+  };
 
   return (
     <Card className="w-full max-w-sm border border-border/70 bg-background/80 backdrop-blur-sm shadow-lg animate-in fade-in-0 zoom-in-95 slide-in-from-bottom-2 duration-300">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-semibold tracking-tight">
-          Добро пожаловать
-        </CardTitle>
-        <CardDescription>
-          Введите ваши данные, чтобы войти в HabTrack
-        </CardDescription>
+        <CardTitle className="text-2xl font-semibold tracking-tight">Добро пожаловать</CardTitle>
+        <CardDescription>Введите ваши данные, чтобы войти в HabTrack</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -51,11 +47,10 @@ export default function LogInPage() {
               name="email"
               control={control}
               rules={{
-                required: "Это поле обязательно",
+                required: 'Это поле обязательно',
                 pattern: {
-                  value:
-                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
-                  message: "Некорректный email адрес",
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
+                  message: 'Некорректный email адрес',
                 },
               }}
               render={({ field, fieldState }) => (
@@ -66,7 +61,7 @@ export default function LogInPage() {
                     value={field.value}
                     onChange={field.onChange}
                     disabled={field.disabled}
-                    icon={<TbMail />}
+                    icon={<Mail />}
                     type="email"
                     autoComplete="email"
                   />
@@ -82,7 +77,7 @@ export default function LogInPage() {
               name="password"
               control={control}
               rules={{
-                required: "Это поле обязательно",
+                required: 'Это поле обязательно',
               }}
               render={({ field, fieldState }) => (
                 <div className="space-y-1">
@@ -100,7 +95,7 @@ export default function LogInPage() {
                     value={field.value}
                     onChange={field.onChange}
                     disabled={field.disabled}
-                    icon={<TbLockPassword />}
+                    icon={<KeyRound />}
                     type="password"
                     autoComplete="current-password"
                   />
@@ -113,7 +108,10 @@ export default function LogInPage() {
               )}
             />
           </div>
-          <Button type="submit" className="w-full hover:bg-accent hover:scale-110 transition-all duration-300">
+          <Button
+            type="submit"
+            className="w-full hover:bg-accent hover:scale-110 transition-all duration-300"
+          >
             Войти
           </Button>
         </form>
@@ -123,9 +121,7 @@ export default function LogInPage() {
           Войти с помощью Google
         </Button>
         <CardAction className="flex items-center justify-between pt-2">
-          <span className="text-xs text-muted-foreground">
-            Нет аккаунта?
-          </span>
+          <span className="text-xs text-muted-foreground">Нет аккаунта?</span>
           <Link to="/register">
             <Button intent="plain" size="sm">
               Регистрация
@@ -134,5 +130,5 @@ export default function LogInPage() {
         </CardAction>
       </CardFooter>
     </Card>
-  )
+  );
 }
