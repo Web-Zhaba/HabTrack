@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import habitsReducer from '@features/habits/store/habitsSlice';
 import habitLogsReducer from '@features/statistics/store/habitLogsSlice';
+import settingsReducer from '@features/settings/store/settingsSlice';
 // import authReducer from '@features/auth/store/authSlice';
 
 function loadState() {
@@ -31,6 +32,7 @@ const preloadedState = loadState();
 const rootReducer = combineReducers({
   habits: habitsReducer,
   habitLogs: habitLogsReducer,
+  settings: settingsReducer,
   // auth: authReducer,
   // ... другие редьюсеры
 });
@@ -45,6 +47,7 @@ store.subscribe(() => {
   saveState({
     habits: state.habits,
     habitLogs: state.habitLogs,
+    settings: state.settings,
   });
 });
 

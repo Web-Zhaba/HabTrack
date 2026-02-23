@@ -13,6 +13,8 @@ import {
   selectCurrentStreak,
   selectMaxStreak,
   selectPerfectDaysCount,
+  upsertHabitLog,
+  upsertManyHabitLogs,
   type HabitLogsState,
 } from './habitLogsSlice';
 import habitLogsReducer from './habitLogsSlice';
@@ -406,5 +408,235 @@ describe('habitLogsSlice selectors', () => {
 
       expect(result1).toBe(result2);
     });
+  });
+});
+
+describe('upsertHabitLog action', () => {
+  it('должен создавать новый лог для бинарной привычки', () => {
+    const initialState: HabitLogsState = {
+      items: [],
+      selectedRange: null,
+    };
+
+    const state = habitLogsReducer(
+      initialState,
+      upsertHabitLog({
+        habitId: 'habit-binary',
+        date: '2026-02-20',
+        completed: true,
+      }),
+    );
+
+    expect(state.items).toHaveLength(1);
+    expect(state.items[0].habitId).toBe('habit-binary');
+    expect(state.items[0].date).toBe('2026-02-20');
+    expect(state.items[0].completed).toBe(true);
+    expect(state.items[0].id).toBe('habit-binary-2026-02-20');
+  });
+
+  it('должен создавать новый лог для количественной привычки', () => {
+    const initialState: HabitLogsState = {
+      items: [],
+      selectedRange: null,
+    };
+
+    const state = habitLogsReducer(
+      initialState,
+      upsertHabitLog({
+        habitId: 'habit-quant',
+        date: '2026-02-20',
+        value: 5,
+      }),
+    );
+
+    expect(state.items).toHaveLength(1);
+    expect(state.items[0].habitId).toBe('habit-quant');
+    expect(state.items[0].value).toBe(5);
+  });
+
+  it('должен обновлять существующий лог (upsert)', () => {
+    const initialState: HabitLogsState = {
+      items: [
+        {
+          id: 'habit-binary-2026-02-20',
+          habitId: 'habit-binary',
+          date: '2026-02-20',
+          completed: false,
+        },
+      ],
+      selectedRange: null,
+    };
+
+    const state = habitLogsReducer(
+      initialState,
+      upsertHabitLog({
+        habitId: 'habit-binary',
+        date: '2026-02-20',
+        completed: true,
+      }),
+    );
+
+    expect(state.items).toHaveLength(1);
+    expect(state.items[0].completed).toBe(true);
+  });
+
+  it('должен использовать существующий id при обновлении', () => {
+    const existingLog: HabitLog = {
+      id: 'custom-log-id',
+      habitId: 'habit-binary',
+      date: '2026-02-20',
+      completed: false,
+    };
+
+    const initialState: HabitLogsState = {
+      items: [existingLog],
+      selectedRange: null,
+    };
+
+    const state = habitLogsReducer(
+      initialState,
+      upsertHabitLog({
+        id: 'custom-log-id',
+        habitId: 'habit-binary',
+        date: '2026-02-20',
+        completed: true,
+      }),
+    );
+
+    expect(state.items).toHaveLength(1);
+    expect(state.items[0].id).toBe('custom-log-id');
+    expect(state.items[0].completed).toBe(true);
+  });
+
+  it('должен корректно обрабатывать переключение бинарной привычки', () => {
+    const initialState: HabitLogsState = {
+      items: [],
+      selectedRange: null,
+    };
+
+    // Первое нажатие - отмечаем
+    const state1 = habitLogsReducer(
+      initialState,
+      upsertHabitLog({
+        habitId: 'habit-binary',
+        date: '2026-02-20',
+        completed: true,
+      }),
+    );
+    expect(state1.items[0].completed).toBe(true);
+
+    // Второе нажатие - снимаем отметку
+    const state2 = habitLogsReducer(
+      state1,
+      upsertHabitLog({
+        habitId: 'habit-binary',
+        date: '2026-02-20',
+        completed: false,
+      }),
+    );
+    expect(state2.items[0].completed).toBe(false);
+  });
+
+  it('должен обновлять значение количественной привычки', () => {
+    const initialState: HabitLogsState = {
+      items: [
+        {
+          id: 'habit-quant-2026-02-20',
+          habitId: 'habit-quant',
+          date: '2026-02-20',
+          value: 5,
+        },
+      ],
+      selectedRange: null,
+    };
+
+    const state = habitLogsReducer(
+      initialState,
+      upsertHabitLog({
+        habitId: 'habit-quant',
+        date: '2026-02-20',
+        value: 10,
+      }),
+    );
+
+    expect(state.items).toHaveLength(1);
+    expect(state.items[0].value).toBe(10);
+  });
+});
+
+describe('upsertManyHabitLogs action', () => {
+  it('должен создавать несколько логов одновременно', () => {
+    const initialState: HabitLogsState = {
+      items: [],
+      selectedRange: null,
+    };
+
+    const state = habitLogsReducer(
+      initialState,
+      upsertManyHabitLogs([
+        { habitId: 'habit-binary', date: '2026-02-20', completed: true },
+        { habitId: 'habit-quant', date: '2026-02-20', value: 10 },
+      ]),
+    );
+
+    expect(state.items).toHaveLength(2);
+  });
+
+  it('должен смешивать создание и обновление логов', () => {
+    const initialState: HabitLogsState = {
+      items: [
+        {
+          id: 'habit-binary-2026-02-20',
+          habitId: 'habit-binary',
+          date: '2026-02-20',
+          completed: false,
+        },
+      ],
+      selectedRange: null,
+    };
+
+    const state = habitLogsReducer(
+      initialState,
+      upsertManyHabitLogs([
+        { habitId: 'habit-binary', date: '2026-02-20', completed: true }, // update
+        { habitId: 'habit-quant', date: '2026-02-20', value: 5 }, // create
+      ]),
+    );
+
+    expect(state.items).toHaveLength(2);
+    expect(state.items.find((l) => l.habitId === 'habit-binary')?.completed).toBe(true);
+    expect(state.items.find((l) => l.habitId === 'habit-quant')?.value).toBe(5);
+  });
+});
+
+describe('синхронизация данных', () => {
+  it('должен генерировать одинаковый id для одинаковых habitId+date', () => {
+    const initialState: HabitLogsState = {
+      items: [],
+      selectedRange: null,
+    };
+
+    // Создаём лог первым способом
+    const state1 = habitLogsReducer(
+      initialState,
+      upsertHabitLog({
+        habitId: 'habit-binary',
+        date: '2026-02-20',
+        completed: true,
+      }),
+    );
+
+    // Создаём лог вторым способом (должен обновить, а не дублировать)
+    const state2 = habitLogsReducer(
+      state1,
+      upsertHabitLog({
+        habitId: 'habit-binary',
+        date: '2026-02-20',
+        completed: false,
+      }),
+    );
+
+    expect(state2.items).toHaveLength(1);
+    expect(state2.items[0].completed).toBe(false);
   });
 });

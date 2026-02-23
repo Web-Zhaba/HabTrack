@@ -501,4 +501,148 @@ export const selectPerfectDaysCount = createSelector(
   },
 );
 
+// Селектор для расчёта серии конкретной привычки
+export const selectHabitStreak = (habitId: string) =>
+  createSelector(
+    [
+      (state: { habitLogs: HabitLogsState; habits: { items: Habit[] } }) => state.habitLogs.items,
+      (state: { habitLogs: HabitLogsState; habits: { items: Habit[] } }) => state.habits.items,
+    ],
+    (logs, habits): number => {
+      const habit = habits.find((h) => h.id === habitId);
+      if (!habit) return 0;
+
+      // Фильтруем логи только для этой привычки
+      const habitLogs = logs.filter((log) => log.habitId === habitId);
+
+      // Получаем все выполненные дни для этой привычки
+      const completedDays = new Set<string>();
+      habitLogs.forEach((log) => {
+        if (isHabitPartiallyCompleted(log, habit)) {
+          completedDays.add(log.date);
+        }
+      });
+
+      if (completedDays.size === 0) return 0;
+
+      const today = new Date();
+      let checkDate = new Date(today);
+      let currentStreak = 0;
+
+      // Проверяем сегодня или вчера
+      if (!completedDays.has(formatDate(checkDate))) {
+        checkDate = new Date(today);
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
+
+      // Считаем стрик
+      while (completedDays.has(formatDate(checkDate))) {
+        currentStreak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
+
+      return currentStreak;
+    },
+  );
+
+// Селектор для получения всех серий привычек
+export const selectAllHabitStreaks = createSelector(
+  [
+    (state: { habitLogs: HabitLogsState; habits: { items: Habit[] } }) => state.habitLogs.items,
+    (state: { habitLogs: HabitLogsState; habits: { items: Habit[] } }) => state.habits.items,
+  ],
+  (logs, habits): Map<string, number> => {
+    const streaks = new Map<string, number>();
+
+    habits.forEach((habit) => {
+      const habitLogs = logs.filter((log) => log.habitId === habit.id);
+
+      const completedDays = new Set<string>();
+      habitLogs.forEach((log) => {
+        if (isHabitPartiallyCompleted(log, habit)) {
+          completedDays.add(log.date);
+        }
+      });
+
+      if (completedDays.size === 0) {
+        streaks.set(habit.id, 0);
+        return;
+      }
+
+      const today = new Date();
+      let checkDate = new Date(today);
+      let currentStreak = 0;
+
+      if (!completedDays.has(formatDate(checkDate))) {
+        checkDate = new Date(today);
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
+
+      while (completedDays.has(formatDate(checkDate))) {
+        currentStreak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
+
+      streaks.set(habit.id, currentStreak);
+    });
+
+    return streaks;
+  },
+);
+
+// Селектор для получения лучшей серии среди всех привычек
+export const selectBestStreak = createSelector(
+  [
+    (state: { habitLogs: HabitLogsState; habits: { items: Habit[] } }) => state.habitLogs.items,
+    (state: { habitLogs: HabitLogsState; habits: { items: Habit[] } }) => state.habits.items,
+  ],
+  (logs, habits): { habitName: string; streak: number } | null => {
+    const streaks = selectAllHabitStreaks.resultFunc(logs, habits);
+
+    let bestStreak = 0;
+    let bestHabitName = '';
+
+    habits.forEach((habit) => {
+      const streak = streaks.get(habit.id) ?? 0;
+      if (streak > bestStreak) {
+        bestStreak = streak;
+        bestHabitName = habit.name;
+      }
+    });
+
+    if (bestStreak === 0) return null;
+
+    return { habitName: bestHabitName, streak: bestStreak };
+  },
+);
+
+// Селектор для получения логов за конкретный день
+export const selectLogsByDate = (dateKey: string) =>
+  createSelector(
+    [(state: { habitLogs: HabitLogsState }) => state.habitLogs.items],
+    (logs) => logs.filter((log) => log.date === dateKey),
+  );
+
+// Селектор для проверки, можно ли отмечать привычку в указанный день
+// (день не позже сегодняшнего и не раньше создания привычки)
+export const selectCanMarkHabit = (habitId: string, dateKey: string) =>
+  createSelector(
+    [(state: { habits: { items: Habit[] } }) => state.habits.items],
+    (habits): boolean => {
+      const habit = habits.find((h) => h.id === habitId);
+      if (!habit) return false;
+
+      const today = formatDate(new Date());
+      const habitCreatedDate = habit.createdAt?.split('T')[0] ?? '';
+
+      // Нельзя отмечать будущие дни
+      if (dateKey > today) return false;
+
+      // Нельзя отмечать дни до создания привычки
+      if (habitCreatedDate && dateKey < habitCreatedDate) return false;
+
+      return true;
+    },
+  );
+
 export default habitLogsSlice.reducer;
