@@ -44,19 +44,19 @@ export function NavbarFlow() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 pointer-events-none">
-      <div className="pointer-events-auto w-full max-w-5xl px-4 flex items-center justify-between gap-2">
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 sm:pt-6 pointer-events-none">
+      <div className="pointer-events-auto w-full max-w-5xl px-2 sm:px-4 flex items-center justify-between gap-1 sm:gap-2">
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center justify-center w-12 h-12 bg-background/40 backdrop-blur-xl border border-border/40 rounded-2xl text-foreground hover:scale-105 transition-transform shadow-sm shrink-0"
+          className="flex items-center justify-center w-9 h-9 sm:w-12 sm:h-12 bg-background/40 backdrop-blur-xl border border-border/40 rounded-2xl text-foreground hover:scale-105 transition-transform shadow-sm shrink-0"
           aria-label="На главную"
         >
-          <LogoIcon className="w-6 h-6" />
+          <LogoIcon className="w-5 h-5 sm:w-6 sm:h-6" />
         </Link>
 
         {/* Navigation */}
-        <nav className="flex items-center p-1 bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-sm text-foreground gap-1 md:gap-2 justify-between overflow-x-auto no-scrollbar max-w-[calc(100vw-7rem)] md:max-w-none">
+        <nav className="flex items-center p-0.5 sm:p-1 bg-background/40 backdrop-blur-xl border border-border/40 rounded-full shadow-sm text-foreground gap-0.5 sm:gap-2 justify-between overflow-x-auto no-scrollbar max-w-[calc(100vw-7rem)] sm:max-w-[calc(100vw-9rem)] md:max-w-none">
           {NAV_ITEMS.map((item) => {
             const isActive =
               location.pathname === item.href || (item.href === '/' && location.pathname === '/');
@@ -66,7 +66,7 @@ export function NavbarFlow() {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  'relative group flex items-center justify-center gap-2 px-2 md:px-4 h-10 rounded-full transition-colors duration-300 min-w-[40px] md:min-w-0',
+                  'relative group flex items-center justify-center px-1.5 sm:px-2 md:px-4 h-9 sm:h-10 rounded-full transition-colors duration-300 min-w-[36px] sm:min-w-[40px] md:min-w-0',
                   isActive
                     ? 'text-primary-foreground font-medium hover:-translate-y-0.5 transition-all duration-500'
                     : 'text-muted-foreground hover:bg-muted-foreground/20 hover:text-foreground',
@@ -86,23 +86,27 @@ export function NavbarFlow() {
                     style={{ zIndex: 0 }}
                   />
                 )}
-                <item.icon className="relative z-10 w-5 h-5 md:w-4 md:h-4" />
-                <span className="relative z-10 hidden md:inline text-sm pb-0.5">{item.label}</span>
+                <item.icon className="relative z-10 w-4 h-4 sm:w-5 sm:h-5 md:w-4 md:h-4" />
+                <span className="relative z-10 hidden md:inline text-xs sm:text-sm pb-0.5">
+                  {item.label}
+                </span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Theme Toggle */}
-        <div className="flex items-center justify-center bg-background/40 backdrop-blur-xl border border-border/40 rounded-full p-1 shadow-sm h-12 px-2 shrink-0">
+        {/* Theme Toggle - всегда виден */}
+        <div className="flex items-center justify-center bg-background/40 backdrop-blur-xl border border-border/40 rounded-full p-0.5 sm:p-1 shadow-sm h-9 sm:h-12 px-1 sm:px-2 shrink-0">
           <AnimatedToggle
             checked={isDark}
             onChange={handleThemeChange}
             variant="icon"
-            size="lg"
+            size="sm"
             icons={{
-              on: <Moon className="w-4 h-4 text-black dark:text-white fill-black" />,
-              off: <Sun className="w-4 h-4 text-yellow-500 fill-yellow-500" />,
+              on: (
+                <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black dark:text-white fill-black" />
+              ),
+              off: <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-500 fill-yellow-500" />,
             }}
             className="shadow-sm"
           />
