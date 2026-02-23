@@ -46,14 +46,9 @@ export function NavbarFlow() {
     setIsDark(checked);
   };
 
-  const handleNavigation = (href: string, label: string, e: React.MouseEvent) => {
-    console.log(`[Navigation] User clicked "${label}" to navigate to: ${href}`);
-
-    // Basic route validation check (client-side)
+  const handleNavigation = (href: string, _label: string, e: React.MouseEvent) => {
     if (!href.startsWith('/')) {
-      console.error(`[Navigation Error] Invalid route detected: ${href}`);
       e.preventDefault();
-      // Optionally show a toast or alert here
       return;
     }
 

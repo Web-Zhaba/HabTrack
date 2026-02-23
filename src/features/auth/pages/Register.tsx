@@ -32,8 +32,8 @@ export default function RegisterPage() {
 
   const passwordValue = watch('password');
 
-  const onSubmit: SubmitHandler<RegisterForm> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<RegisterForm> = (_data) => {
+    // TODO: implement registration
   };
 
   return (

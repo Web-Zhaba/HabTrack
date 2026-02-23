@@ -24,8 +24,8 @@ export default function ResetPasswordPage() {
 
   const emailError = formState.errors.email?.message;
 
-  const onSubmit: SubmitHandler<ResetForm> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<ResetForm> = (_data) => {
+    // TODO: implement password reset
   };
 
   return (
