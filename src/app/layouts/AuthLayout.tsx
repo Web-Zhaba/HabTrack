@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 import { Badge } from "@/components/ui/badge"
 import { BarChart3Icon, CheckCircleIcon, Stars } from "lucide-react";
 import { Logo } from "@/components/logo";
+import { Analytics } from "@vercel/analytics/next"
 
 export default function AuthLayout() {
   return (
@@ -40,6 +41,7 @@ export default function AuthLayout() {
         </div>
         <div className="w-full max-w-md mx-auto">
           <Outlet />
+          <Analytics />
         </div>
       </div>
     </div>

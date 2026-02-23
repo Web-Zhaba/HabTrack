@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router';
 import { NavbarFlow } from '@/components/ui/navbar-flow';
 import { Footer } from '@app/components/Footer';
+import { Analytics } from "@vercel/analytics/next"
 
 export const MainLayout = () => {
   return (
@@ -16,6 +17,7 @@ export const MainLayout = () => {
       <main className="flex-1 pt-10">
         <div className="w-full max-w-5xl mx-auto px-4 py-6">
           <Outlet />
+          <Analytics />
         </div>
       </main>
       <Footer />
