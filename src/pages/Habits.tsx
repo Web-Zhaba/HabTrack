@@ -4,14 +4,9 @@ import { Button } from '@/components/ui/button';
 import { EmptyHabits } from '@features/habits/components/EmptyHabits';
 import { HabitCreateModal } from '@features/habits/components/HabitCreateModal';
 import { HabitCard } from '@features/habits/components/HabitCard';
-import type { Habit } from '@features/habits/types/habit.types';
-import {
-  addHabit,
-  removeHabit,
-  updateHabit,
-  selectActiveHabits,
-} from '@features/habits/store/habitsSlice';
-import { upsertManyHabitLogs } from '@features/statistics/store/habitLogsSlice';
+import type { Habit } from '@features/habits/store';
+import { addHabit, removeHabit, updateHabit, selectActiveHabits } from '@features/habits/store';
+import { upsertManyHabitLogs } from '@features/statistics/store';
 import { AnimatePresence } from 'motion/react';
 import BasicModal from '@/components/ui/smoothui/basic-modal';
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';

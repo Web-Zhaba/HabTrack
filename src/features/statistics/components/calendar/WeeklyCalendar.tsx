@@ -15,6 +15,7 @@ import { today, getLocalTimeZone, isSameDay, CalendarDate } from '@international
 import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { addDays, startOfWeek } from 'date-fns';
+import { useDateFormat } from '@features/settings/hooks/useDateFormat';
 
 interface WeeklyCalendarProps {
   range: RangeValue<DateValue> | null;
@@ -24,6 +25,7 @@ interface WeeklyCalendarProps {
 }
 
 export const WeeklyCalendar = React.memo(({ range, onRangeChange }: WeeklyCalendarProps) => {
+  const { formatDate } = useDateFormat();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const todayDateValue = today(getLocalTimeZone());
@@ -37,6 +39,17 @@ export const WeeklyCalendar = React.memo(({ range, onRangeChange }: WeeklyCalend
     return new CalendarDate(weekStart.getFullYear(), weekStart.getMonth() + 1, weekStart.getDate());
   });
 
+  // Форматирование заголовка (сегодняшняя дата) с использованием формата из настроек
+  const formattedToday = formatDate(todayDate, 'd MMM, EEE');
+
+  // Форматирование заголовка для текущей недели
+  const currentWeekDate = new Date(
+    currentWeekStartDate.year,
+    currentWeekStartDate.month - 1,
+    currentWeekStartDate.day,
+  );
+  const formattedWeekTitle = formatDate(currentWeekDate, 'd MMM');
+
   // Дни текущей недели
   const weekDays = Array.from({ length: 7 }, (_, i) => {
     const date = addDays(
@@ -47,20 +60,6 @@ export const WeeklyCalendar = React.memo(({ range, onRangeChange }: WeeklyCalend
   });
 
   const weekDayLabels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-  const monthLabels = [
-    'янв.',
-    'фев.',
-    'мар.',
-    'апр.',
-    'май',
-    'июн.',
-    'июл.',
-    'авг.',
-    'сен.',
-    'окт.',
-    'ноя.',
-    'дек.',
-  ];
 
   // Навигация по неделям
   const handlePrevWeek = () => {
@@ -101,13 +100,6 @@ export const WeeklyCalendar = React.memo(({ range, onRangeChange }: WeeklyCalend
     const d = date.getDay();
     return d === 0 || d === 6; // 0 = Sunday, 6 = Saturday
   };
-
-  // Форматирование заголовка (сегодняшняя дата)
-  const todayDateObj = new Date(todayDateValue.year, todayDateValue.month - 1, todayDateValue.day);
-  const formattedToday = `${todayDateValue.day} ${monthLabels[todayDateValue.month - 1]}, ${weekDayLabels[todayDateObj.getDay() === 0 ? 6 : todayDateObj.getDay() - 1]}`;
-
-  // Форматирование заголовка для текущей недели
-  const formattedWeekTitle = `${currentWeekStartDate.day} ${monthLabels[currentWeekStartDate.month - 1]}`;
 
   return (
     <div className="flex-1 p-4 sm:p-6 bg-card">

@@ -7,7 +7,6 @@ import {
   type ReactNode,
   useCallback,
   useState,
-  useEffect,
 } from "react";
 
 export interface AnimatedToggleProps {
@@ -76,12 +75,7 @@ const AnimatedToggle = ({
   const isControlled = controlledChecked !== undefined;
   const checked = isControlled ? controlledChecked : internalChecked;
 
-  // Sync internal state if controlled prop changes (optional but good practice)
-  useEffect(() => {
-    if (isControlled) {
-      setInternalChecked(controlledChecked);
-    }
-  }, [controlledChecked, isControlled]);
+  // Контролируемый режим использует значение из пропса; внутреннее состояние не синхронизируем эффектом
 
   const handleToggle = useCallback(() => {
     if (disabled) {

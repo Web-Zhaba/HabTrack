@@ -32,7 +32,7 @@ export default function RegisterPage() {
 
   const passwordValue = watch('password');
 
-  const onSubmit: SubmitHandler<RegisterForm> = (_data) => {
+  const onSubmit: SubmitHandler<RegisterForm> = () => {
     // TODO: implement registration
   };
 

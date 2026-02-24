@@ -30,7 +30,7 @@ export default function LogInPage() {
   const emailError = formState.errors.email?.message;
   const passwordError = formState.errors.password?.message;
 
-  const onSubmit: SubmitHandler<IForm> = (_data) => {
+  const onSubmit: SubmitHandler<IForm> = () => {
     // TODO: подключить авторизацию
   };
 

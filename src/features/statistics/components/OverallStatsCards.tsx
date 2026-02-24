@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useAppSelector } from '@app/store/hooks';
+import { selectHabitLogs } from '@features/statistics/store';
 import {
-  selectHabitLogs,
   selectCurrentStreak,
   selectMaxStreak,
   selectCompletedDays,
-} from '@features/statistics/store/habitLogsSlice';
-import { selectActiveHabits } from '@features/habits/store/habitsSlice';
+} from '@features/statistics/store';
+import { selectActiveHabits } from '@features/habits/store';
 import { subDays, format, eachDayOfInterval } from 'date-fns';
 import type { Habit } from '../../habits/types/habit.types';
 import { StreakCard } from './StreakCard';

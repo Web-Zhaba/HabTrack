@@ -2,6 +2,7 @@ import SettingsPaletteCard from '@features/settings/components/SettingsPaletteCa
 import SettingsLocaleCard from '@features/settings/components/SettingsLocaleCard';
 import SettingsDataCard from '@features/settings/components/SettingsDataCard';
 import SettingsExtrasCard from '@features/settings/components/SettingsExtrasCard';
+import { DateFormatPicker } from '@features/settings/components/DateFormatPicker';
 
 export default function SettingsPage() {
   return (
@@ -12,9 +13,10 @@ export default function SettingsPage() {
           Управляйте внешним видом, данными и дополнительными опциями дневника привычек.
         </p>
       </div>
-
       <SettingsPaletteCard />
-
+            
+      <DateFormatPicker />
+      
       <SettingsLocaleCard />
 
       <SettingsDataCard />

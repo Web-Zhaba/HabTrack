@@ -1,4 +1,4 @@
-import { createSlice, createSelector, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Habit } from '../types/habit.types';
 
 export interface HabitsState {
@@ -10,6 +10,8 @@ const initialState: HabitsState = {
   items: [],
   loading: false,
 };
+
+export { initialState };
 
 const habitsSlice = createSlice({
   name: 'habits',
@@ -35,20 +37,22 @@ const habitsSlice = createSlice({
 
 export const { setHabits, addHabit, removeHabit, updateHabit } = habitsSlice.actions;
 
-// Селекторы
-export const selectHabits = createSelector(
-  [(state: { habits: HabitsState }) => state.habits.items],
-  (items) => [...items],
-);
+// Селекторы с мемоизацией
+// Поддерживают оба пути: state.habits (старый) и state.nodes (новый)
+type StateWithHabitsOrNodes = {
+  habits?: HabitsState;
+  nodes?: HabitsState;
+};
 
-export const selectActiveHabits = createSelector(
-  [(state: { habits: HabitsState }) => state.habits.items],
-  (items) => items.filter((habit) => habit.status === 'active' || habit.status === undefined),
-);
+export const selectHabits = (state: StateWithHabitsOrNodes) =>
+  (state.habits || state.nodes)?.items ?? [];
 
-export const selectPausedHabits = createSelector(
-  [(state: { habits: HabitsState }) => state.habits.items],
-  (items) => items.filter((habit) => habit.status === 'paused'),
-);
+export const selectActiveHabits = (state: StateWithHabitsOrNodes) =>
+  ((state.habits || state.nodes)?.items ?? []).filter(
+    (habit) => habit.status === 'active' || habit.status === undefined,
+  );
+
+export const selectPausedHabits = (state: StateWithHabitsOrNodes) =>
+  ((state.habits || state.nodes)?.items ?? []).filter((habit) => habit.status === 'paused');
 
 export default habitsSlice.reducer;

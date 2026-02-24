@@ -6,11 +6,18 @@ import { HomeHabitsList } from '@features/home/components/HomeHabitsList';
 import WeeklyCalendarCard from '@features/statistics/components/WeeklyCalendarCard';
 import { HabitCreateModal } from '@features/habits/components/HabitCreateModal';
 import { useAppDispatch, useAppSelector } from '@app/store/hooks';
-import { setSelectedRange, selectSelectedRange, upsertManyHabitLogs } from '@features/statistics/store/habitLogsSlice';
-import { selectActiveHabits } from '@features/habits/store/habitsSlice';
-import { addHabit } from '@features/habits/store/habitsSlice';
-import { getTodayKey, canMarkDate } from '@/lib/utils';
-import type { Habit } from '@features/habits/types/habit.types';
+import {
+  setSelectedRange,
+  selectSelectedRange,
+  upsertManyHabitLogs,
+} from '@features/statistics/store';
+import {
+  selectActiveHabits,
+  addHabit,
+  getTodayKey,
+  canMarkDate,
+  type Habit,
+} from '@features/habits/store';
 
 export default function HomePage() {
   const dispatch = useAppDispatch();
@@ -112,7 +119,7 @@ export default function HomePage() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex-1"
+          className="flex-1 lg:h-[520px]"
         >
           <HomeHabitsList onCreateHabit={() => setIsCreateModalOpen(true)} />
         </motion.div>

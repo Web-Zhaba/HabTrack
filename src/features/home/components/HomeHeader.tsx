@@ -3,8 +3,7 @@ import { Plus, Sun, Moon, CloudSun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAppSelector } from '@app/store/hooks';
 import { selectSettings } from '@features/settings/store/settingsSlice';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import { useDateFormat } from '@features/settings/hooks/useDateFormat';
 
 interface HomeHeaderProps {
   onAddHabit: () => void;
@@ -13,12 +12,13 @@ interface HomeHeaderProps {
 export function HomeHeader({ onAddHabit }: HomeHeaderProps) {
   const settings = useAppSelector(selectSettings);
   const userName = settings?.userName || 'Пользователь';
+  const { formatDate, formatString } = useDateFormat();
 
   // Определяем время суток
   const hour = new Date().getHours();
   let greeting = 'Добрый вечер';
   let Icon = Moon;
-  
+
   if (hour >= 5 && hour < 12) {
     greeting = 'Доброе утро';
     Icon = Sun;
@@ -28,7 +28,8 @@ export function HomeHeader({ onAddHabit }: HomeHeaderProps) {
   }
 
   const today = new Date();
-  const formattedDate = format(today, "d MMMM yyyy,EEEE", { locale: ru });
+  // Используем формат из настроек, добавляя день недели
+  const formattedDate = formatDate(today, `${formatString}, EEEE`);
 
   return (
     <motion.div
@@ -50,9 +51,7 @@ export function HomeHeader({ onAddHabit }: HomeHeaderProps) {
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
             {greeting}, {userName}!
           </h1>
-          <p className="text-muted-foreground capitalize">
-            {formattedDate}
-          </p>
+          <p className="text-muted-foreground capitalize">{formattedDate}</p>
         </div>
       </div>
 

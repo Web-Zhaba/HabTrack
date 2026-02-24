@@ -1,22 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import type { Habit } from '../../habits/types/habit.types';
 import type { HabitLog } from '@/types/HabitLog.types';
-import {
-  calculateHabitRangeProgress,
-  groupHabitsByDay,
-  type DateRange,
-  setSelectedRange,
-  selectSelectedRange,
-  selectHabitLogs,
-  selectCompletedDays,
-  selectPerfectDays,
-  selectCurrentStreak,
-  selectMaxStreak,
-  selectPerfectDaysCount,
-  upsertHabitLog,
-  upsertManyHabitLogs,
-  type HabitLogsState,
-} from './habitLogsSlice';
+import { setSelectedRange, selectSelectedRange, selectHabitLogs, upsertHabitLog, upsertManyHabitLogs, type HabitLogsState, type DateRange } from './habitLogsSlice';
+import { calculateHabitRangeProgress, groupHabitsByDay, selectCompletedDays, selectPerfectDays, selectCurrentStreak, selectMaxStreak, selectPerfectDaysCount } from './habitStatsSlice';
 import habitLogsReducer from './habitLogsSlice';
 
 const habitsFixture: Habit[] = [
@@ -26,7 +12,7 @@ const habitsFixture: Habit[] = [
     description: 'Короткая зарядка утром',
     categoryId: 'health',
     color: '--primary',
-    icon: '🏃',
+    icon: 'run',
     type: 'binary',
     createdAt: '2026-02-01',
   },
@@ -36,7 +22,7 @@ const habitsFixture: Habit[] = [
     description: 'Чтение книг',
     categoryId: 'learning',
     color: '--chart-1',
-    icon: '📚',
+    icon: 'book',
     type: 'quantitative',
     target: 10,
     unit: 'страниц',

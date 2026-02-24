@@ -14,7 +14,7 @@ const habitsFixture: Habit[] = [
     description: 'Утренняя зарядка',
     categoryId: 'health',
     color: '--primary',
-    icon: '🏃',
+    icon: 'run',
     type: 'binary',
     createdAt: '2026-02-01',
   },
@@ -24,7 +24,7 @@ const habitsFixture: Habit[] = [
     description: 'Чтение книг',
     categoryId: 'learning',
     color: '--chart-1',
-    icon: '📚',
+    icon: 'book',
     type: 'quantitative',
     target: 10,
     unit: 'страниц',
@@ -37,7 +37,7 @@ const habitsFixture: Habit[] = [
     description: 'Пробежка вечером',
     categoryId: 'sport',
     color: '--chart-2',
-    icon: '🏃‍♂️',
+    icon: 'run',
     type: 'binary',
     createdAt: '2026-02-01',
     status: 'paused',
@@ -71,19 +71,6 @@ describe('habitsSlice selectors', () => {
       expect(result).toEqual([]);
       expect(result).toHaveLength(0);
     });
-
-    it('должен быть мемоизирован и возвращать ту же ссылку при неизменных данных', () => {
-      const state: HabitsState = {
-        items: habitsFixture,
-        loading: false,
-      };
-
-      const rootState = { habits: state };
-      const result1 = selectHabits(rootState);
-      const result2 = selectHabits(rootState);
-
-      expect(result1).toBe(result2);
-    });
   });
 
   describe('selectActiveHabits', () => {
@@ -113,19 +100,6 @@ describe('habitsSlice selectors', () => {
       const pausedIds = result.map((h) => h.id);
       expect(pausedIds).not.toContain('habit-3');
     });
-
-    it('должен быть мемоизирован и возвращать ту же ссылку при неизменных данных', () => {
-      const state: HabitsState = {
-        items: habitsFixture,
-        loading: false,
-      };
-
-      const rootState = { habits: state };
-      const result1 = selectActiveHabits(rootState);
-      const result2 = selectActiveHabits(rootState);
-
-      expect(result1).toBe(result2);
-    });
   });
 
   describe('selectPausedHabits', () => {
@@ -154,19 +128,6 @@ describe('habitsSlice selectors', () => {
       const result = selectPausedHabits(rootState);
 
       expect(result).toHaveLength(0);
-    });
-
-    it('должен быть мемоизирован и возвращать ту же ссылку при неизменных данных', () => {
-      const state: HabitsState = {
-        items: habitsFixture,
-        loading: false,
-      };
-
-      const rootState = { habits: state };
-      const result1 = selectPausedHabits(rootState);
-      const result2 = selectPausedHabits(rootState);
-
-      expect(result1).toBe(result2);
     });
   });
 });

@@ -1,6 +1,5 @@
 import { memo, useMemo } from 'react';
 import { useReducedMotion } from 'motion/react';
-import { getTodayKey } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -17,13 +16,14 @@ import {
   FlameIcon,
 } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { useAppDispatch, useAppSelector } from '@app/store/hooks';
-import { upsertHabitLog, selectHabitStreak } from '@features/statistics/store/habitLogsSlice';
-import type { HabitLog } from '@/types/HabitLog.types';
+import { useAppSelector } from '@app/store/hooks';
+import { selectHabitStreak } from '@features/statistics/store';
 import type { Habit } from '../types/habit.types';
-import { HABIT_ICONS } from '../constants';
+import { HABIT_ICONS, type HabitIconName } from '../constants';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { CardTilt, CardTiltContent } from '@/components/ui/card-tilt';
+import { useHabitProgress } from '../hooks/useHabitProgress';
+import { useHabitActions } from '../hooks/useHabitActions';
 
 type HabitCardProps = {
   habit: Habit;
@@ -42,63 +42,23 @@ const CATEGORY_LABELS: Record<string, string> = {
 export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: HabitCardProps) {
   const navigate = useNavigate();
   const shouldReduceMotion = useReducedMotion();
-  const dispatch = useAppDispatch();
-
-  const todayKey = getTodayKey();
-
-  const logForToday: HabitLog | undefined = useAppSelector((state) =>
-    state.habitLogs.items.find(
-      (log: HabitLog) => log.habitId === habit.id && log.date === todayKey,
-    ),
-  );
+  const {
+    completedToday,
+    valueToday,
+    percent,
+    isOverTarget,
+    progressColor,
+    isQuantitative,
+    target,
+  } = useHabitProgress(habit);
+  const { handleDecrease, handleIncrease, handleToggle } = useHabitActions(habit);
 
   const selectStreak = useMemo(() => selectHabitStreak(habit.id), [habit.id]);
   const streak = useAppSelector(selectStreak);
 
-  const completedToday = logForToday?.completed ?? false;
-  const valueToday = logForToday?.value ?? 0;
-
-  const isQuantitative = habit.type === 'quantitative';
-  const target = habit.target ?? 0;
-  const isOverTarget = isQuantitative && target > 0 && valueToday > target;
-
-  const percent =
-    isQuantitative && target > 0
-      ? Math.max(0, Math.min(100, Math.round((valueToday / target) * 100)))
-      : completedToday
-        ? 100
-        : 0;
-
   const categoryLabel = CATEGORY_LABELS[habit.categoryId ?? ''] ?? 'Привычка';
 
-  const handleDecrease = () => {
-    const next = Math.max(0, valueToday - 1);
-    dispatch(
-      upsertHabitLog({
-        habitId: habit.id,
-        date: todayKey,
-        value: next,
-      }),
-    );
-  };
-
-  const handleIncrease = () => {
-    const next = valueToday + 1;
-    dispatch(
-      upsertHabitLog({
-        habitId: habit.id,
-        date: todayKey,
-        value: next,
-      }),
-    );
-  };
-
-  const IconComponent = habit.icon ? HABIT_ICONS[habit.icon] : null;
-
-  // Цвет для прогресс-бара: обычный, перевыполнение или из привычки
-  const progressColor = isOverTarget
-    ? '--chart-5'
-    : habit.color || '--primary';
+  const IconComponent = HABIT_ICONS[(habit.icon ?? 'activity') as HabitIconName];
 
   return (
     <CardTilt
@@ -114,23 +74,17 @@ export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: Ha
               {/* Иконка слева */}
               {habit.icon && (
                 <div
-                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-xl"
+                  className="flex h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-lg text-xl"
                   style={{ backgroundColor: `var(${habit.color || '--primary'})` }}
                 >
-                  {IconComponent ? (
-                    <IconComponent className="h-5 w-5 text-accent-foreground" />
-                  ) : (
-                    <span>{habit.icon}</span>
-                  )}
+                  <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 text-accent-foreground" />
                 </div>
               )}
 
               {/* Название и прогресс-бар */}
               <div className="flex-1 min-w-0 space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-sm md:text-base truncate">
-                    {habit.name}
-                  </span>
+                  <span className="font-semibold text-sm md:text-base truncate">{habit.name}</span>
                   {streak > 0 && (
                     <TooltipProvider>
                       <Tooltip>
@@ -210,7 +164,7 @@ export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: Ha
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <p className="text-xs text-muted-foreground line-clamp-2 cursor-help">
+                    <p className="hidden sm:block text-xs text-muted-foreground line-clamp-2 cursor-help">
                       {habit.description}
                     </p>
                   </TooltipTrigger>
@@ -234,10 +188,7 @@ export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: Ha
                   </Badge>
                 ))
               ) : (
-                <Badge
-                  variant="outline"
-                  className="border-dashed text-[10px] px-1.5 py-0 h-4"
-                >
+                <Badge variant="outline" className="border-dashed text-[10px] px-1.5 py-0 h-4">
                   {categoryLabel}
                 </Badge>
               )}
@@ -252,6 +203,7 @@ export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: Ha
                     size="icon"
                     intent="outline"
                     className="rounded-full w-10 h-10"
+                    aria-label="decrease"
                     onClick={handleDecrease}
                   >
                     <MinusIcon className="h-5 w-5" />
@@ -264,6 +216,7 @@ export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: Ha
                     size="icon"
                     intent={isOverTarget ? 'primary' : 'outline'}
                     className="rounded-full w-10 h-10"
+                    aria-label="increase"
                     onClick={handleIncrease}
                   >
                     <PlusIcon className="h-5 w-5" />
@@ -275,16 +228,7 @@ export const HabitCard = memo(function HabitCard({ habit, onDelete, onEdit }: Ha
                   size="md"
                   intent={completedToday ? 'primary' : 'outline'}
                   className="flex items-center justify-center gap-2 rounded-full w-full h-10"
-                  onClick={() =>
-                    dispatch(
-                      upsertHabitLog({
-                        habitId: habit.id,
-                        date: todayKey,
-                        completed: !completedToday,
-                        value: !completedToday ? 1 : 0,
-                      }),
-                    )
-                  }
+                  onClick={handleToggle}
                 >
                   {completedToday && <BadgeCheck className="h-4 w-4" />}
                   {!completedToday && <BadgeIcon className="h-4 w-4" />}

@@ -27,7 +27,6 @@ import {
   Utensils,
   BedDouble,
   Smile,
-  type LucideIcon,
 } from 'lucide-react';
 
 export const COLOR_OPTIONS = [
@@ -40,7 +39,7 @@ export const COLOR_OPTIONS = [
 
 export type ColorToken = (typeof COLOR_OPTIONS)[number]['value'];
 
-export const HABIT_ICONS: Record<string, LucideIcon> = {
+export const HABIT_ICONS = {
   activity: Activity,
   run: Dumbbell,
   book: Book,
@@ -69,4 +68,6 @@ export const HABIT_ICONS: Record<string, LucideIcon> = {
   photo: Camera,
   writing: PenTool,
   fun: Smile,
-};
+} as const;
+
+export type HabitIconName = keyof typeof HABIT_ICONS;

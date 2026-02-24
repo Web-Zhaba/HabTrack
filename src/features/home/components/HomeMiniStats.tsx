@@ -3,19 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import AnimatedProgressBar from '@/components/ui/smoothui/animated-progress-bar';
 import { useAppSelector } from '@app/store/hooks';
+import { selectSelectedRange } from '@features/statistics/store';
 import {
   calculateHabitRangeProgress,
-  selectSelectedRange,
   selectPerfectDaysCount,
   selectBestStreak,
-  selectHabitLogs,
-} from '@features/statistics/store/habitLogsSlice';
-import { selectActiveHabits } from '@features/habits/store/habitsSlice';
+  selectAllHabitsCompletedToday,
+} from '@features/statistics/store';
+import { selectActiveHabits } from '@features/habits/store';
 import { Flame, Trophy, Zap, CheckCheck } from 'lucide-react';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import { useDateFormat } from '@features/settings/hooks/useDateFormat';
 import { CardTilt, CardTiltContent } from '@/components/ui/card-tilt';
-import { getTodayKey } from '@/lib/utils';
 
 interface HomeMiniStatsProps {
   onMarkAll: () => void;
@@ -24,23 +22,17 @@ interface HomeMiniStatsProps {
 
 export function HomeMiniStats({ onMarkAll, onUnmarkAll }: HomeMiniStatsProps) {
   const habits = useAppSelector(selectActiveHabits);
-  const habitLogs = useAppSelector(selectHabitLogs);
   const selectedRange = useAppSelector(selectSelectedRange);
   const perfectDaysCount = useAppSelector(selectPerfectDaysCount);
   const bestStreak = useAppSelector(selectBestStreak);
+  const allCompletedToday = useAppSelector(selectAllHabitsCompletedToday);
+  const { formatDate } = useDateFormat();
 
-  const summary = calculateHabitRangeProgress(habits, habitLogs, selectedRange || { start: '', end: '' });
-
-  // Проверяем, все ли привычки выполнены сегодня
-  const todayKey = getTodayKey();
-  const todayLogs = habitLogs.filter(log => log.date === todayKey);
-  const allCompletedToday = habits.length > 0 && habits.every(habit => {
-    const log = todayLogs.find(l => l.habitId === habit.id);
-    if (habit.type === 'quantitative') {
-      return log && log.value && log.value >= (habit.target ?? 1);
-    }
-    return log?.completed === true;
-  });
+  const summary = calculateHabitRangeProgress(
+    habits,
+    useAppSelector((state) => state.habitLogs.items),
+    selectedRange || { start: '', end: '' },
+  );
 
   if (!selectedRange) {
     return null;
@@ -49,12 +41,12 @@ export function HomeMiniStats({ onMarkAll, onUnmarkAll }: HomeMiniStatsProps) {
   const formatDateRange = () => {
     const start = new Date(selectedRange.start);
     const end = new Date(selectedRange.end);
-    
+
     if (selectedRange.start === selectedRange.end) {
-      return format(start, 'd MMMM', { locale: ru });
+      return formatDate(start, 'd MMMM');
     }
-    
-    return `${format(start, 'd MMM', { locale: ru })} - ${format(end, 'd MMM', { locale: ru })}`;
+
+    return `${formatDate(start, 'd MMM')} - ${formatDate(end, 'd MMM')}`;
   };
 
   return (

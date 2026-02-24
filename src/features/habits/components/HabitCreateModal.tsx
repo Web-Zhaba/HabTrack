@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/animat
 import { AnimatedNumberField } from '@/components/ui/number-field';
 
 import type { Habit, HabitType } from '../types/habit.types';
-import { COLOR_OPTIONS, type ColorToken, HABIT_ICONS } from '../constants';
+import { COLOR_OPTIONS, type ColorToken, HABIT_ICONS, type HabitIconName } from '../constants';
 
 type HabitCreateModalProps = {
   isOpen: boolean;
@@ -51,7 +51,7 @@ function HabitForm({ initialData, onSubmit, onClose }: HabitFormProps) {
   const [tags, setTags] = useState<string[]>(
     initialData?.tags ?? (initialData?.categoryId ? [initialData.categoryId] : ['здоровье']),
   );
-  const [icon, setIcon] = useState<string>(
+  const [icon, setIcon] = useState<HabitIconName>(
     initialData?.icon && HABIT_ICONS[initialData.icon] ? initialData.icon : 'activity',
   );
   const [errors, setErrors] = useState<FormErrors>({});
@@ -247,7 +247,7 @@ function HabitForm({ initialData, onSubmit, onClose }: HabitFormProps) {
           <FieldLabel>Иконка</FieldLabel>
           <FieldContent>
             <div className="grid grid-cols-4 gap-2 sm:grid-cols-7 max-h-60 overflow-y-auto custom-scroll p-1">
-              {Object.keys(HABIT_ICONS).map((key) => {
+              {(Object.keys(HABIT_ICONS) as HabitIconName[]).map((key: HabitIconName) => {
                 const IconComponent = HABIT_ICONS[key];
                 const isActive = icon === key;
 

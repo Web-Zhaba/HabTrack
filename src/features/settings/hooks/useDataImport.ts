@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useAppDispatch } from '@app/store/hooks';
-import { setHabits } from '@features/habits/store/habitsSlice';
-import { upsertManyHabitLogs } from '@features/statistics/store/habitLogsSlice';
+import { setHabits } from '@features/habits/store';
+import { upsertManyHabitLogs } from '@features/statistics/store';
 
 interface ExportData {
   habits: {

@@ -2,16 +2,15 @@ import * as React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AnimatedProgressBar from '@/components/ui/smoothui/animated-progress-bar';
 import { useAppSelector } from '@app/store/hooks';
+import { selectHabitLogs, selectSelectedRange } from '@features/statistics/store';
 import {
   calculateHabitRangeProgress,
   type HabitSummary,
   selectCurrentStreak,
   selectMaxStreak,
   selectPerfectDaysCount,
-  selectHabitLogs,
-  selectSelectedRange,
-} from '@features/statistics/store/habitLogsSlice';
-import { selectHabits } from '@features/habits/store/habitsSlice';
+} from '@features/statistics/store';
+import { selectHabits } from '@features/habits/store';
 import { Trophy, TrendingDown, CheckCircle2, Flame, Award } from 'lucide-react';
 
 export function HabitsSummaryCard() {

@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Download, Trash2 } from 'lucide-react';
 import BasicModal from '@/components/ui/smoothui/basic-modal';
 import { useAppDispatch } from '@app/store/hooks';
-import { setHabits } from '@features/habits/store/habitsSlice';
-import { clearHabitLogs } from '@features/statistics/store/habitLogsSlice';
+import { setHabits } from '@features/habits/store';
+import { clearHabitLogs } from '@features/statistics/store';
 import { ImportDataButton } from '@/components/ImportDataButton';
 
 export default function SettingsDataCard() {

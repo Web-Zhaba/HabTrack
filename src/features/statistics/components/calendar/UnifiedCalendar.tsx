@@ -16,6 +16,7 @@ import { ChevronLeft, ChevronRight, CalendarDays } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { addDays, startOfWeek } from 'date-fns';
 import { motion, AnimatePresence } from 'motion/react';
+import { useMediaQuery } from 'usehooks-ts';
 
 interface UnifiedCalendarProps {
   range: RangeValue<DateValue> | null;
@@ -28,10 +29,11 @@ type CalendarView = 'week' | 'month';
 
 export const UnifiedCalendar = React.memo(
   ({ range, onRangeChange, preset = 'Custom', onPresetChange }: UnifiedCalendarProps) => {
+    const isDesktop = useMediaQuery('(min-width: 1024px)');
     const [isExpanded, setIsExpanded] = useState(false);
 
-    // Вид зависит от состояния разворота: свёрнут = неделя, развёрнут = месяц
-    const view: CalendarView = isExpanded ? 'month' : 'week';
+    // На десктопе всегда месяц, на мобильных — управляется кнопкой
+    const view: CalendarView = isDesktop ? 'month' : isExpanded ? 'month' : 'week';
 
     const todayDateValue = today(getLocalTimeZone());
 
@@ -218,7 +220,7 @@ export const UnifiedCalendar = React.memo(
             <Button
               onPress={() => setIsExpanded(!isExpanded)}
               className={cn(
-                'flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all',
+                'flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all lg:hidden',
                 isExpanded
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-muted text-muted-foreground hover:bg-muted/80',
@@ -235,9 +237,9 @@ export const UnifiedCalendar = React.memo(
           </div>
         </div>
 
-        {/* Пресеты (только в развёрнутом режиме) */}
+        {/* Пресеты (в развёрнутом режиме или на десктопе) */}
         <AnimatePresence>
-          {isExpanded && onPresetChange && (
+          {(onPresetChange && (isDesktop || isExpanded)) && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
@@ -272,9 +274,9 @@ export const UnifiedCalendar = React.memo(
           )}
         </AnimatePresence>
 
-        {/* Компактный вид - неделя */}
+        {/* Компактный вид - неделя (только мобильный, когда не развернуто) */}
         <AnimatePresence>
-          {!isExpanded && view === 'week' && (
+          {(!isDesktop && !isExpanded && view === 'week') && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
@@ -352,9 +354,9 @@ export const UnifiedCalendar = React.memo(
           )}
         </AnimatePresence>
 
-        {/* Развёрнутый вид */}
+        {/* Развёрнутый вид (десктоп всегда, мобильный по кнопке) */}
         <AnimatePresence>
-          {isExpanded && (
+          {(isDesktop || isExpanded) && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}

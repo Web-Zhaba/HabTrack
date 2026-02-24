@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useAppSelector } from '@app/store/hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { selectHabitLogs } from '@features/statistics/store/habitLogsSlice';
-import { selectActiveHabits } from '@features/habits/store/habitsSlice';
+import { selectHabitLogs } from '@features/statistics/store';
+import { selectActiveHabits } from '@features/habits/store';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 const MAX_DISPLAY_HABITS = 8;

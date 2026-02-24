@@ -1,8 +1,8 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createBrowserRouter } from 'react-router';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { MainLayout } from './layouts/MainLayout';
 import HomePage from '@pages/Home.tsx';
-import { lazy, Suspense } from 'react';
 import { Loader2Icon } from 'lucide-react';
 
 // Лэйауты

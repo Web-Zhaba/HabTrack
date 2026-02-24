@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@app/store/hooks';
 import { today, getLocalTimeZone, parseDate, type CalendarDate } from '@internationalized/date';
 import type { DateValue, RangeValue } from 'react-aria-components';
-import { setSelectedRange, selectSelectedRange } from '@features/statistics/store/habitLogsSlice';
+import { setSelectedRange, selectSelectedRange } from '@features/statistics/store';
 
 function formatKeyFromCalendarDate(date: CalendarDate): string {
   const y = date.year;
@@ -15,35 +15,25 @@ export const useHomeCalendar = () => {
   const dispatch = useAppDispatch();
   const selectedRange = useAppSelector(selectSelectedRange);
 
-  const [range, setRange] = useState<RangeValue<DateValue> | null>(() => {
-    // Lazy initialization from Redux state
-    if (selectedRange) {
-      try {
-        return {
-          start: parseDate(selectedRange.start),
-          end: parseDate(selectedRange.end),
-        };
-      } catch {
-        const now = today(getLocalTimeZone());
-        return { start: now, end: now };
-      }
-    }
+  // Инициализируем сегодня - всегда по умолчанию
+  const [range, setRange] = useState<RangeValue<DateValue>>(() => {
     const now = today(getLocalTimeZone());
     return { start: now, end: now };
   });
 
   const [preset, setPreset] = useState<string>('Custom');
 
-  // Sync from Redux if it changes externally - используем прямой паттерн без setState в эффекте
-  // Если selectedRange изменился извне, просто обновляем range
-  const syncRangeFromRedux = useCallback(() => {
+  // Синхронизация с Redux - если selectedRange изменился, обновляем range
+  useEffect(() => {
     if (selectedRange) {
       try {
         const start = parseDate(selectedRange.start);
         const end = parseDate(selectedRange.end);
         setRange({ start, end });
       } catch {
-        // ignore invalid dates
+        // Если даты невалидны, используем сегодня
+        const now = today(getLocalTimeZone());
+        setRange({ start: now, end: now });
       }
     }
   }, [selectedRange]);
@@ -105,6 +95,5 @@ export const useHomeCalendar = () => {
     handlePresetChange,
     handleStartChange,
     handleEndChange,
-    syncRangeFromRedux, // Экспортируем для ручного вызова при необходимости
   };
 };
